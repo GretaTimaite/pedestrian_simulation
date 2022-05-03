@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.339">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploring the efficacy of different methods for comparing pedestrian simulations against empirical data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<script src="project_summary_files/libs/clipboard/clipboard.min.js"></script>
+<script src="project_summary_files/libs/quarto-html/quarto.js"></script>
+<script src="project_summary_files/libs/quarto-html/popper.min.js"></script>
+<script src="project_summary_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="project_summary_files/libs/quarto-html/anchor.min.js"></script>
+<link href="project_summary_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="project_summary_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="project_summary_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="project_summary_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="project_summary_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exploring the efficacy of different methods for comparing pedestrian simulations against empirical data</h1>
+</div>
+
+
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="feature_image.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">By Tumisu (Pixabay)</figcaption><p></p>
+</figure>
+</div>
+<p>Agent-based models (ABMs) have become one of the main modelling tools helping to understand the contemporary challenges of human movement within cities <span class="citation" data-cites="crooks_etal2021">(<a href="#ref-crooks_etal2021" role="doc-biblioref">Crooks et al. 2021</a>)</span>. ABMs are used to simulate real systems by creating artificial scenarios in the contexts ranging from disease and epidemiology to traffic and pedestrian simulation <span class="citation" data-cites="torrens2010">(<a href="#ref-torrens2010" role="doc-biblioref">Torrens 2010</a>)</span>. ABM simulation can be used then to assess, for instance, new traffic interventions before they are implemented <span class="citation" data-cites="crooks_etal2021">(<a href="#ref-crooks_etal2021" role="doc-biblioref">Crooks et al. 2021</a>)</span>. Furthermore, the uptake of ABMs has largely been informed by the increasing availability of data <span class="citation" data-cites="crooks_etal2021">(<a href="#ref-crooks_etal2021" role="doc-biblioref">Crooks et al. 2021</a>)</span>, yet it remains a challenge to evaluate the accuracy of the models because of various uncertainties, such as missing data and inherent randomness <span class="citation" data-cites="kieu_etal2020">(<a href="#ref-kieu_etal2020" role="doc-biblioref">Kieu, Malleson, and Heppenstall 2020</a>)</span>.</p>
+<p>This project aims to address the issue of uncertainty by investigating the impact of using different methods to evaluate the reliability of agent-based models. In other words, (some) uncertainties will be identified, quantified, and handled in a way that can help to enhance the understanding of a model’s quality and usefulness. The project objectives are:</p>
+<ol type="1">
+<li>Produce a review and analysis of existing data on pedestrian movement within crowded corridors and within a train station concourse.</li>
+<li>Simulate the movements of pedestrians in these environments.</li>
+<li>Assess the difference between the simulations and the data using a variety new and existing of methods.</li>
+</ol>
+<p>The project focus is on pedestrian models, however it is expected that the developed methods will be applicable to any agent-based modelling, such as consumer behaviour in shopping. To support the reproducibility of results, open source code and documentation will be produced in partnership with the Alan Turing Institute, which also funds the project as part of a wider collaboration entitled “Understanding and Quantifying Uncertainty in Agent-Based Models for Smart City Forecasts”.</p>
+<section id="project-team" class="level5">
+<h5 class="anchored" data-anchor-id="project-team">Project team</h5>
+<p>Greta Timaite, Leeds Institute for Data Analytics, University of Leeds</p>
+<p>Dr Josie McCulloch, School of Geography, University of Leeds</p>
+<p>Professor Nick Malleson, School of Geography, University of Leeds</p>
+<p>Professor Alison Heppenstall, School of Geography, University of Leeds</p>
+<p>Dr Jon Ward, School of Mathematics, University of Leeds</p>
+<p>Dr Jiaqi Ge, School of Geography, University of Leeds</p>
+</section>
+<section id="bibliography" class="level5">
+<h5 class="anchored" data-anchor-id="bibliography">Bibliography</h5>
+<p><br></p>
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-crooks_etal2021" class="csl-entry" role="doc-biblioentry">
+Crooks, Andrew, Alison Heppenstall, Nick Malleson, and Ed Manley. 2021. <span>“Agent-<span>Based Modeling</span> and the <span>City</span>: <span>A Gallery</span> of <span>Applications</span>.”</span> In <em>Urban <span>Informatics</span></em>, edited by Wenzhong Shi, Michael F. Goodchild, Michael Batty, Mei-Po Kwan, and Anshu Zhang, 885–910. The <span>Urban Book Series</span>. <span>Singapore</span>: <span>Springer</span>. <a href="https://doi.org/10.1007/978-981-15-8983-6_46">https://doi.org/10.1007/978-981-15-8983-6_46</a>.
+</div>
+<div id="ref-kieu_etal2020" class="csl-entry" role="doc-biblioentry">
+Kieu, Le-Minh, Nicolas Malleson, and Alison Heppenstall. 2020. <span>“Dealing with Uncertainty in Agent-Based Models for Short-Term Predictions.”</span> <em>Royal Society Open Science</em> 7 (1). <a href="https://doi.org/10.1098/rsos.191074">https://doi.org/10.1098/rsos.191074</a>.
+</div>
+<div id="ref-torrens2010" class="csl-entry" role="doc-biblioentry">
+Torrens, Paul M. 2010. <span>“Agent-Based <span>Models</span> and the <span>Spatial Sciences</span>.”</span> <em>Geography Compass</em> 4 (5): 428–48. <a href="https://doi.org/10.1111/j.1749-8198.2009.00311.x">https://doi.org/10.1111/j.1749-8198.2009.00311.x</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
