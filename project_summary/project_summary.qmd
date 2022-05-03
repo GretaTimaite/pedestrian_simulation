@@ -1,0 +1,31 @@
+---
+title: "Exploring the efficacy of different methods for comparing pedestrian simulations against empirical data"
+format: html
+editor: source
+---
+
+outline (200-300 words):
+
+-   need
+
+-   brief
+
+-   objectives
+
+-   other things to consider:
+
+    -   supervisor list: Professor Nick Malleson, Professor Alison Heppenstall, Dr Jon Ward, Dr Jiaqi Ge
+    -   references
+    -   partners: The Alan Turing Institute
+    -   funding body
+        -   ask how to indicate that it's Alan Turing.
+
+Agent-based models (ABMs) have become one of the main modelling tools helping to understand the contemporary challenges of cities (Crooks et al 2021). ABMs are used to simulate real systems by creating artificial scenarios in the contexts that range from disease and epidemiology to traffic and pedestrian simulation (Torrens 2010). The uptake of AMBs has largely been informed by the increasing availability of data (Crooks et al 2021), yet it remains a challenge to evaluate the accuracy of the models because of various uncertainties, such as missing data and inherent randomness (Kieu et al 2020).
+
+This project aims to address the issue of uncertainty by investigating the impact of using different methods to evaluate the reliability of agent-based models. In other words, uncertainties will be identified, quantified, and handled in a way that can help to enhance the understanding of model's quality. The project objectives are:
+
+1.  Produce a review and analysis of existing data on pedestrian movement within crowded corridors and within a train station concourse.
+2.  Simulate the movements of pedestrians in these environments.
+3.  Assess the difference between the simulations and the data using a variety of methods.
+
+The project focus is on pedestrian models, however it is expected that the developed methods will be applicable to any agent-based modelling, such as consumer behaviour in shopping. To support the reproducibility of results, open source code and documentation will be produced in partnership with the Alan Turing Institute, which also funds the project as part of a wider collaboration entitled "Understanding and Quantifying Uncertainty in Agent-Based Models for Smart City Forecasts".
