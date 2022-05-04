@@ -5,7 +5,7 @@ editor: source
 bibliography: references.bib
 ---
 
-![By Tumisu (pixabay)](feature_image.jpg)
+![By Anna Dziubinska (Unsplash)](fi_anna_dziubinska.jpg)
 
 Agent-based models (ABMs) have become one of the main modelling tools helping to understand the contemporary challenges of human movement within cities [@crooks_etal2021]. ABMs are used to simulate real systems by creating artificial scenarios in the contexts ranging from disease and epidemiology to traffic and pedestrian simulation [@torrens2010]. ABM simulation can be used then to assess, for instance, new traffic interventions before they are implemented [@crooks_etal2021]. Furthermore, the uptake of ABMs has largely been informed by the increasing availability of data [@crooks_etal2021], yet it remains a challenge to evaluate the accuracy of the models because of various uncertainties, such as missing data and inherent randomness [@kieu_etal2020].
 
