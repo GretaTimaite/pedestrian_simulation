@@ -72,6 +72,9 @@ polygon(x = c(11, 11, 0, 0),
         y = c(0, -3, -3, 0),
         border = "red",
         lwd = 2) # exit 0
+polygon(x = c(17, 14, 11, 11, 14, 17, 20, 20, 17),
+        y = c(17,17, 20, 23, 26, 26, 23, 20, 17),
+        col = "red") # information booth (an obstacle)
 # annotation of a plot
 text(x = -4,
      y = 15,
@@ -120,4 +123,6 @@ traj_sf = traj %>%
 traj_sf_5001 = traj_sf %>% 
   filter(ID == 5001)
 
-
+plot(sf::st_geometry(traj_sf), 
+     add = TRUE,
+     cex = 0.2)
