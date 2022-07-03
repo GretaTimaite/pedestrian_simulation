@@ -1,4 +1,9 @@
-# AIM: in this script frames from GCS data will be read in
+# AIM: in this script frames from GCS data will be read in and converted to a .csv 
+
+# an end result of this script (.csv and/or .geojson files) can be downloaded from with the following:
+
+frames_df = read.csv("https://github.com/GretaTimaite/pedestrian_simulation/releases/download/data/gcs_frames.csv")
+frames_sf = sf::st_read("https://github.com/GretaTimaite/pedestrian_simulation/releases/download/data/gcs_frames.geojson")
 
 # get frames data
 # read all frames (.dat files) at once into a list
@@ -145,14 +150,23 @@ frames_matrix1 = frames_unlist1 |>
 colnames(frames_matrix1) = c("ID", "x_coord", "y_coord") # give column names
 
 frames_matrix1 = cbind(frames_matrix1, row_ids_split_vect1) # join a df and a vector
+colnames(frames_matrix1)[4] = "frame" # rename a column
 
-frames_sf1 = frames_matrix1 |> 
+## save frames as a csv file
+# write.csv(x = frames_matrix1,
+#           file = "gcs_frames.csv", # writes to working directory
+#           col.names = T, # keeps column names
+#           row.names = F) # ignores row names
+
+frames_sf = frames_matrix1 |> 
   # convert to a df
   as.data.frame() |>
   # convert to an sf object with spatial information (points)
   sf::st_as_sf(coords = c("x_coord", "y_coord"))
 
-
+## save frames_sf as a geojson file
+# sf::write_sf(frames_sf1,
+#              "gcs_frames.geojson")
 
 
 
