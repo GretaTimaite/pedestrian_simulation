@@ -169,11 +169,3 @@ frames_sf = frames_matrix1 |>
 #              "gcs_frames.geojson")
 
 
-
-
-
-
-
-
-# action list:
-# - [] upload frames df to github releases and download them from there
