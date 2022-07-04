@@ -24,14 +24,34 @@ frames_sf_m |>
 frames_sf_m = frames_sf_m |> 
   dplyr::mutate(sec = frame / 25)
 
-ggplot2::ggplot(frames_sf_m,
-                ggplot2::aes(x = sec,
-                    y = stat(count)))+
-  ggplot2::stat_count()
+# group df by seconds
+frames_grouped = frames_sf_m |> 
+  sf::st_drop_geometry() |> #drop geometry as it's not needed here
+  dplyr::group_by(sec) |> # group by seconds
+  dplyr::summarise(n = dplyr::n()) # summarise 
 
+# let's calculate mean and median values of seconds to add to the plot
+frames_mean = frames_sf_m$sec |> mean()
+frames_median = frames_sf_m$sec |> median()
 
+# let's calculate mean and median values of n to add to the plot
+frames_mean_s = frames_sf_m$sec |> mean()
+frames_median_s = frames_sf_m$sec |> median()
+frames_mean_n = frames_grouped$n |> mean()
+frames_median_n = frames_grouped$n |> median()
 
-
+ggplot2::ggplot(frames_grouped) +
+  ggplot2::aes(x = sec,
+               y = n) +
+  ggplot2::geom_line() +
+  ggplot2::geom_vline(xintercept = frames_mean_s,
+                      col = "red") +
+  ggplot2::geom_vline(xintercept = frames_median_s, 
+                      col = "blue")+
+  ggplot2::geom_hline(yintercept = frames_mean_n,
+                      col = "red")+
+  ggplot2::geom_hline(yintercept = frames_median_n,
+                      col = "blue")
 
 # tasks:
 # 1. write env as an object
