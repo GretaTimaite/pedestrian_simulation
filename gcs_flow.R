@@ -1,7 +1,7 @@
 # AIM 1: plot flow of all GCS environment
 # AIM 2L plot flow of a chosen area in GCS
 
-# ================================== AIM 1
+# =============================================================== AIM 1
 # first read in data
 frames_df = read.csv("https://github.com/GretaTimaite/pedestrian_simulation/releases/download/data/gcs_frames.csv")
 
@@ -31,10 +31,6 @@ frames_grouped = frames_sf_m |>
   dplyr::group_by(sec) |> # group by seconds
   dplyr::summarise(n = dplyr::n()) # summarise 
 
-# let's calculate mean and median values of seconds to add to the plot
-frames_mean = frames_sf_m$sec |> mean()
-frames_median = frames_sf_m$sec |> median()
-
 # let's calculate mean and median values of n to add to the plot
 frames_mean_s = frames_sf_m$sec |> mean()
 frames_median_s = frames_sf_m$sec |> median()
@@ -55,7 +51,7 @@ ggplot2::ggplot(frames_grouped) +
   ggplot2::geom_hline(yintercept = frames_median_n,
                       col = "blue")
 
-# ================================== AIM 2
+# ========================================================= AIM 2
 # divide polygon into n subareas
 ## walls as sf
 # polygon(x = c(0, 0, 53, 53),
@@ -98,9 +94,37 @@ gcs_frames_joined2 = frames_sf_m[gcs_div_sf[2,], op = sf::st_within]
 identical(gcs_frames_joined1, gcs_frames_joined[[1]]) # TRUE
 identical(gcs_frames_joined2, gcs_frames_joined[[2]]) # TRUE
 
+# group each sf object in a list by seconds
+gcs_frames_joined_grouped = list()
+for (i in 1:length(gcs_frames_joined)){
+  gcs_frames_joined_grouped[[i]] = gcs_frames_joined[[i]] |> 
+    sf::st_drop_geometry() |> 
+    dplyr::group_by(sec) |> 
+    dplyr::summarise(n = dplyr::n())
+}
 
+gcs_frames_joined[[1]] |> 
+  sf::st_drop_geometry() |> 
+  dplyr::group_by(sec) |> 
+  dplyr::summarise(n = dplyr::n())
 
-# tasks:
-# 1. write env as an object
+# let's calculate mean and median values of n to add to the plot
+# frames_mean_s = frames_sf_m$sec |> mean()
+# frames_median_s = frames_sf_m$sec |> median()
+# frames_mean_n = frames_grouped$n |> mean()
+# frames_median_n = frames_grouped$n |> median()
+
+# let's create a list of plots showing flow in each polygon
+plots = list()
+for (i in 1:length(gcs_frames_joined_grouped)){
+  plots[[i]] = ggplot2::ggplot(gcs_frames_joined_grouped[[i]]) +
+    ggplot2::aes(x = sec,
+                 y = n) +
+    ggplot2::geom_line() 
+  print(plots)
+}
+# let's plot a polygons 1-4 and 5-8
+gridExtra::grid.arrange(plots[[1]], plots[[2]],plots[[3]],plots[[4]], layout_matrix = rbind(c(1,2),c(3,4)))
+gridExtra::grid.arrange(plots[[5]], plots[[6]],plots[[7]],plots[[8]], layout_matrix = rbind(c(1,2),c(3,4)))
 
 
