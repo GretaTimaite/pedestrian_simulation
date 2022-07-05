@@ -48,4 +48,17 @@ for (i in 1:length(gcs_area)){
   frames_d[[i]] = frames_a[[i]] |> dplyr::mutate(density = n / gcs_area[i])
 }
 
-  
+# plotting densities
+
+plots_den = list()
+for (i in 1:length(frames_d)){
+  plots_den[[i]] = ggplot2::ggplot(frames_d[[i]]) +
+    ggplot2::aes(x = sec,
+                 y = density) +
+    ggplot2::geom_line() 
+  print(plots_den)
+}
+# let's plot a polygons 1-4 and 5-8
+gridExtra::grid.arrange(plots[[1]], plots[[2]],plots[[3]],plots[[4]], layout_matrix = rbind(c(1,2),c(3,4)))
+gridExtra::grid.arrange(plots_den[[13]],plots_den[[14]],plots_den[[15]], plots_den[[16]], layout_matrix = rbind(c(1,2),c(3,4)))
+
