@@ -1,0 +1,606 @@
+---
+title: "gcs"
+format: html
+---
+
+# Get data
+
+```{r, eval = F}
+# csv file (will need conversion to an sf object)
+frames_df = read.csv("https://github.com/GretaTimaite/pedestrian_simulation/releases/download/data/gcs_frames.csv")
+```
+
+```{r}
+# geojson (an sf object)
+frames_sf = sf::st_read("https://github.com/GretaTimaite/pedestrian_simulation/releases/download/data/gcs_frames.geojson")
+```
+
+To find out the entire process of achieving the above results, check out the code below.
+I recommend downloading zip file with frames from the GitHub and upload it to your working directory. 
+
+Link: https://github.com/Urban-Analytics/dust/tree/main/Projects/ABM_DA/experiments/grand_central_terminal_data/GCT_final_real_data
+
+For some reason downloading and unzipping within R did not work as smoothly, hence I excluded this option from the code.
+
+```{r, eval=FALSE} 
+# read all frames (.dat files) at once into a list
+setwd("/Users/gretatimaite/Desktop/pedestrian_simulation/GCS_data/frames") # set working directory to read files from; change the path as needed.
+frames_l = list() # creates a list
+listdat = dir(pattern = "*.dat") # creates the list of all the .dat files in the directory
+for (k in 1:length(listdat)){
+  frames_l[[k]] = read.delim(listdat[k],
+                             header = T,
+                             sep = "")
+}
+# === the commented code below shows why list needs sorting
+
+# convert list to a df
+# frames_df = data.frame(t(sapply(frames_l,c)))
+# frames_df = frames_df |> 
+#   # rename columns and keep only 3
+#   dplyr::rename(pedestrianID = X.,
+#                                 pedestrian_id = pedestrianID,
+#                                 x_coord = pedestrianID,
+#                                 y_coord = x) %>% 
+#   dplyr::select(1:3) 
+
+# problem: files are not read one by one (ie frame_0.0.dat, frame_1.0.dat,frame_3.0.dat)
+# but alphabetically (ie. frame_0.0.dat, frame_1.0.dat,frame_10.0.dat)
+# it messes up frame order
+
+# ======
+
+# solution borrowed from stackoverflow :)
+# https://stackoverflow.com/questions/10777367/how-can-i-read-the-files-in-a-directory-in-sorted-order-using-r
+listdat_sorted = sort(listdat)
+listdat_sorted_split = strsplit(listdat_sorted, "frame_") 
+listdat_sorted_split = as.numeric(sapply(listdat_sorted_split,
+                                          function(x) x = sub(".dat", "", x[2])))
+
+listdat_correct_order = listdat_sorted[order(listdat_sorted_split)] 
+# let's get the frames in a correct order
+for (k in 1:length(listdat_correct_order)){
+  frames_l[[k]] = read.delim(listdat_correct_order[k],
+                             header = T,
+                             sep = "")
+}
+
+# convert list to a df joined by
+frames_df = data.frame(t(sapply(frames_l,c)))
+# rename columns and leave only the ones we need
+frames_df = frames_df %>% rename(pedestrianID = X.,
+                                 pedestrian_id = pedestrianID,
+                                 x_coord = pedestrianID,
+                                 y_coord = x) %>% 
+  dplyr::select(1:3)
+
+
+frames_df1 = frames_df |>
+  # creates a new column with row id that will be indicative of a time frame (ie time) in which the agent is present
+  dplyr::mutate(row_id = row_number()) 
+
+frames_df1 = frames_df1 |> 
+  # finds out the length of pedestrianID column, this will be needed later in replicating the values and unlisting
+  dplyr::mutate(id_length = frames_df$pedestrianID |> lengths()) 
+
+row_ids1 = rep(
+  x = frames_df1$row_id,
+  times = frames_df1$id_length
+) # replicates row ids based on the id_length
+
+row_ids_split1 = split(row_ids1, 
+                      rep(1:length(frames_df1$id_length), 
+                          frames_df1$id_length)) # splits row_ids into multiple lists with a number of elements based on the id_length
+# we cannot convert the row_ids_split1 list to a df directly because of different row lengths. 
+# We will need to tell R to to add NAs when if cell is empty
+# let's find out the max length of a list
+length = row_ids_split1 |> 
+  lengths() |>
+  max()
+
+# define a max number of rows based on `length` as columns not having all the rows filled with values will be filled with NAs instead
+row_ids_split_df1 = as.data.frame(do.call(cbind, 
+                                          lapply(row_ids_split1, 
+                                                 `length<-`,
+                                                 max(length))))
+
+row_ids_split_vect1 = row_ids_split_df1 |>
+  as.list() |> # turn df into a list
+  lapply(function(x) x[!is.na(x)]) |> # removes NAs before unlisting
+  unlist() # unlist it
+
+frames_unlist1 = frames_df1 |>
+  # remove columns that we need no longer
+  dplyr::select(-c(row_id, id_length)) |>
+  # unlist the df
+  unlist()
+
+frames_matrix1 = frames_unlist1 |> 
+  # turn a list into a matrix; 
+  matrix(nrow = 226390, ncol = 3, byrow = F) # we unlisted 3 different columns each having 226390 rows
+# to find nrow you can, for example, run the code below:
+# frames_df1$pedestrianID |> lengths() |> sum()
+colnames(frames_matrix1) = c("ID", "x_coord", "y_coord") # give column names
+
+frames_matrix1 = cbind(frames_matrix1, row_ids_split_vect1) # join a df and a vector
+colnames(frames_matrix1)[4] = "frame" # rename a column
+
+## save frames as a csv file
+# write.csv(x = frames_matrix1,
+#           file = "gcs_frames.csv", # writes to working directory
+#           col.names = T, # keeps column names
+#           row.names = F) # ignores row names
+
+frames_sf = frames_matrix1 |> 
+  # convert to a df
+  as.data.frame() |>
+  # convert to an sf object with spatial information (points)
+  sf::st_as_sf(coords = c("x_coord", "y_coord"))
+
+## save frames_sf as a geojson file
+# sf::write_sf(frames_sf1,
+#              "gcs_frames.geojson")
+
+```
+
+# Draw GCS environment in metres
+
+In this section Grand Central Station's environment is drawn. 
+```{r}
+# concourse parameters: width(x) = 53, height(y) = 50;
+plot(-10:60, -10:60, col = "white", xlab = "X", ylab = "Y") # draw an empty plot
+polygon(x = c(0, 0, 53, 53),
+        y = c(0, 50, 50,0),
+        border = "black",
+        lwd = 2) # draw walls of a GCS
+polygon(x= c(0, -3, -3, 0),
+        y = c(7, 7, 25, 25),
+        border = "red",
+        lwd = 2) # exit 10
+polygon(x = c(0, 0, 11, 11),
+        y = c(50, 53, 53, 50),
+        border = "red",
+        lwd = 2) # exit 9
+polygon(x = c(11, 11, 33, 33),
+        y = c(50, 53, 53, 50),
+        border = "red",
+        lwd = 2) # exit 8
+polygon(x = c(33, 33, 48.5, 48.5),
+        y = c(50, 53, 53, 50),
+        border = "red",
+        lwd = 2) # exit 7
+polygon(x = c(53, 56, 56, 53),
+        y = c(50, 50, 46.5, 46.5),
+        border = "red",
+        lwd = 2) # exit 6
+polygon(x = c(53, 56, 56, 53),
+        y = c(40, 40, 29, 29),
+        border = "red",
+        lwd = 2) # exit 5
+polygon(x = c(53, 56, 56, 53),
+        y = c(22, 22, 10, 10),
+        border = "red",
+        lwd = 2) # exit 4
+polygon(x = c(53, 56, 56, 53),
+        y = c(4.5, 4.5, 0, 0),
+        border = "red",
+        lwd = 2) # exit 3
+polygon(x = c(53, 53, 33, 33),
+        y = c(0, -3, -3, 0),
+        border = "red",
+        lwd = 2) # exit 2
+polygon(x = c(33, 33, 11, 11),
+        y = c(0, -3, -3, 0),
+        border = "red",
+        lwd = 2) # exit 1
+polygon(x = c(11, 11, 0, 0),
+        y = c(0, -3, -3, 0),
+        border = "red",
+        lwd = 2) # exit 0
+polygon(x = c(21, 18, 15, 15, 18, 21, 24, 24, 21),
+        y = c(21, 21, 24, 27, 30, 30, 27, 24, 21),
+        col = "red") # information booth (an obstacle)
+# annotation of a plot
+text(x = -4,
+     y = 15,
+     label = "Exit 10",
+     srt = 90)
+text(x = 7,
+     y = 55,
+     label = "Exit 9")
+text(x = 20,
+     y = 55,
+     label = "Exit 8")
+text(x = 40,
+     y = 55,
+     label = "Exit 7")
+text(x = 57,
+     y = 48,
+     label = "Exit 6",
+     srt = -90)
+text(x = 57,
+     y = 34,
+     label = "Exit 5",
+     srt = -90)
+text(x = 57,
+     y = 15,
+     label = "Exit 4",
+     srt = -90)
+text(x = 57,
+     y = 2,
+     label = "Exit 3",
+     srt = -90)
+text(x = 45,
+     y = -5,
+     label = "Exit 2")
+text(x = 22,
+     y = -5,
+     label = "Exit 1")
+text(x = 6,
+     y = -5,
+     label = "Exit 0")
+```
+
+# Draw GCS environment in pixels
+
+Coordinates in the trajectories data are in pixels, hence we need to draw it in pixels too.
+I followed this notebook and approximated 1 meter to 14 pixels
+https://github.com/Urban-Analytics/dust/blob/main/Projects/ABM_DA/experiments/grand_central_terminal_data/GCT-data.ipynb
+
+```{r}
+plot(-100:800, -100:800, col = "white", xlab = "X", ylab = "Y") # draw an empty plot
+polygon(x = c(0, 0, 742, 742),
+        y = c(0, 700, 700, 0),
+        border = "black",
+        lwd = 2) # draw walls of a GCS
+polygon(x= c(0, -42, -42, 0),
+        y = c(98, 98, 350, 350),
+        border = "red",
+        lwd = 2) # exit 10
+polygon(x = c(0, 0, 154, 154),
+        y = c(700, 742, 742, 700),
+        border = "red",
+        lwd = 2) # exit 9
+polygon(x = c(154, 154, 462, 462),
+        y = c(700, 742, 742, 700),
+        border = "red",
+        lwd = 2) # exit 8
+polygon(x = c(462, 462, 679, 679),
+        y = c(700, 742, 742, 700),
+        border = "red",
+        lwd = 2) # exit 7
+polygon(x = c(742, 784, 784, 742),
+        y = c(700, 700, 651, 651),
+        border = "red",
+        lwd = 2) # exit 6
+polygon(x = c(742, 784, 784, 742),
+        y = c(560, 560, 406, 406),
+        border = "red",
+        lwd = 2) # exit 5
+polygon(x = c(742, 784, 784, 742),
+        y = c(308, 308, 140, 140),
+        border = "red",
+        lwd = 2) # exit 4
+polygon(x = c(742, 784, 784, 742),
+        y = c(63, 63, 0, 0),
+        border = "red",
+        lwd = 2) # exit 3
+polygon(x = c(742, 742, 462, 462),
+        y = c(0, -42, -42, 0),
+        border = "red",
+        lwd = 2) # exit 2
+polygon(x = c(462, 462, 154, 154),
+        y = c(0, -42, -42, 0),
+        border = "red",
+        lwd = 2) # exit 1
+polygon(x = c(154, 154, 0, 0),
+        y = c(0, -42, -42, 0),
+        border = "red",
+        lwd = 2) # exit 0
+polygon(x = c(294, 252, 210, 210, 252, 294, 336, 336, 294),
+        y = c(294, 294, 336, 378, 420, 420, 378, 336, 294),
+        col = "red") # information booth (an obstacle)
+
+# annotation of a plot
+text(x = -56,
+     y = 210,
+     label = "Exit 10",
+     srt = 90)
+text(x = 98,
+     y = 770,
+     label = "Exit 9")
+text(x = 280,
+     y = 770,
+     label = "Exit 8")
+text(x = 560,
+     y = 770,
+     label = "Exit 7")
+text(x = 798,
+     y = 672,
+     label = "Exit 6",
+     srt = -90)
+text(x = 798,
+     y = 476,
+     label = "Exit 5",
+     srt = -90)
+text(x = 798,
+     y = 210,
+     label = "Exit 4",
+     srt = -90)
+text(x = 798,
+     y = 28,
+     label = "Exit 3",
+     srt = -90)
+text(x = 630,
+     y = -70,
+     label = "Exit 2")
+text(x = 308,
+     y = -70,
+     label = "Exit 1")
+text(x = 84,
+     y = -70,
+     label = "Exit 0")
+
+
+# now we can plot trajectories data on top of the plot
+frames_sf |>
+  sf::st_geometry() |> 
+  plot(add = T) 
+```
+
+# Flow
+
+In this section flow of agents in the environment will be plotted. First, it will be done for the entire GCS and then it will be divided and flow measured in each of the newly created smaller polygon.
+
+## Flow in GCS
+
+```{r}
+# the coordinates of frames_sf are in pixels, but having them in meters might make the analysis more intuitive.
+# 1 metre = 14 pixels (also see `pixel_geo.R` script)
+frames_sf_m = frames_sf |> 
+  dplyr::mutate(geometry = geometry / 14)
+
+# now let's create a new column for seconds
+# 1 second = 25 frames
+frames_sf_m = frames_sf_m |> 
+  dplyr::mutate(sec = frame / 25)
+
+# group df by seconds
+frames_grouped = frames_sf_m |> 
+  sf::st_drop_geometry() |> #drop geometry as it's not needed here
+  dplyr::group_by(sec) |> # group by seconds
+  dplyr::summarise(n = dplyr::n()) # summarise 
+
+frames_grouped |> 
+  head()
+```
+
+Now let's plot!
+
+```{r}
+# let's calculate mean and median values of n to add to the plot
+frames_mean_s = frames_sf_m$sec |> mean()
+frames_median_s = frames_sf_m$sec |> median()
+frames_mean_n = frames_grouped$n |> mean()
+frames_median_n = frames_grouped$n |> median()
+
+ggplot2::ggplot(frames_grouped) +
+  ggplot2::aes(x = sec,
+               y = n) +
+  ggplot2::geom_line() +
+  ggplot2::geom_vline(xintercept = frames_mean_s,
+                      col = "red") +
+  ggplot2::geom_text(ggplot2::aes(x=frames_mean_s+5, label=paste0("Mean\n",round(frames_mean_s,2)), y=80)) +
+  ggplot2::geom_vline(xintercept = frames_median_s, 
+                      col = "blue") +
+  ggplot2::geom_hline(yintercept = frames_mean_n,
+                      col = "red") +
+  ggplot2::geom_hline(yintercept = frames_median_n,
+                      col = "blue")
+```
+
+I'm not sure if adding mean and median are useful at all..
+
+## Flow in the divided GCS
+
+First we need to divide the GCS polygon. In this example I will do it into equal 16 polygons (4x4). 
+
+```{r}
+# let's convert GCS environment (walls) into an sf object so we can apply spatial operations
+# polygon(x = c(0, 0, 53, 53),
+#         y = c(0, 50, 50,0),
+#         border = "black",
+#         lwd = 2) # draw walls of a GCS
+matrix_walls = matrix(c(0,0,0,50,53,50, 53,0,0,0),
+                      ncol = 2,
+                      byrow = TRUE)
+matrixlist_walls = list(matrix_walls)
+polygon_walls = sf::st_polygon(matrixlist_walls)
+
+# divide gcs polygon by creating a grid
+gcs_div = sf::st_make_grid(polygon_walls, 
+                           n = 4,
+                           what = "polygons")
+```
+
+```{r}
+# plot grid over gcs polygon to check their order (starts bottom left)
+polygon_walls |> plot(reset = T)
+gcs_div |> plot(add =T)
+gcs_div[[1]] |> plot(add =T, col = "red")
+gcs_div[[2]] |> plot(add =T, col = "blue")
+gcs_div[[5]] |> plot(add =T, col = "green")
+```
+
+They look good to me. Now let's convert it into an sf object.
+
+```{r}
+# convert gcs_div to an sf object
+gcs_div_sf = gcs_div |> 
+  sf::st_as_sf() |> 
+  dplyr::rename(geom = x)
+```
+
+Let's iterate through all 16 polygons to find out which rows (agents) are within each polygon
+
+```{r}
+# first create a list to store our multiple dataframes
+gcs_frames_joined = list()
+for (i in 1:lengths(gcs_div_sf)){
+  gcs_frames_joined[[i]] = frames_sf_m[gcs_div_sf[i,], op = sf::st_within] # here I use `within` but it could be changes to `intersects`...
+}
+
+# sanity check
+gcs_frames_joined1 = frames_sf_m[gcs_div_sf[1,], op = sf::st_within]
+gcs_frames_joined2 = frames_sf_m[gcs_div_sf[2,], op = sf::st_within]
+identical(gcs_frames_joined1, gcs_frames_joined[[1]]) # TRUE
+identical(gcs_frames_joined2, gcs_frames_joined[[2]]) # TRUE
+```
+
+Now we will move to grouping and plotting each of the 16 polygons.
+
+```{r}
+# group each sf object by seconds and make a list out of them
+gcs_frames_joined_grouped = list()
+for (i in 1:length(gcs_frames_joined)){
+  gcs_frames_joined_grouped[[i]] = gcs_frames_joined[[i]] |> 
+    sf::st_drop_geometry() |> 
+    dplyr::group_by(sec) |> 
+    dplyr::summarise(n = dplyr::n())
+}
+
+# sanity check comparison (alert: ugly code!)
+identical(gcs_frames_joined_grouped[[1]], # first list of a list that was just made
+          gcs_frames_joined[[1]] |> # repeating the same code as in the loop above but only on 1 (the first) list 
+            sf::st_drop_geometry() |> 
+            dplyr::group_by(sec) |> 
+            dplyr::summarise(n = dplyr::n()))
+```
+
+In the plot showing flow in the entire GCS environment, I added means and medians but this time I will exclude them as I do not know if it's valuable to have them at this stage. Plus, it will make the code shorter.
+
+```{r}
+# let's create a list of plots showing flow in each polygon
+plots = list()
+for (i in 1:length(gcs_frames_joined_grouped)){
+  plots[[i]] = ggplot2::ggplot(gcs_frames_joined_grouped[[i]]) +
+    ggplot2::aes(x = sec,
+                 y = n) +
+    ggplot2::geom_line() 
+  # print(plots)
+}
+```
+
+```{r}
+# let's plot a polygons 1-4 and 12-15
+gridExtra::grid.arrange(plots[[1]], plots[[2]],plots[[3]],plots[[4]], layout_matrix = rbind(c(1,2),c(3,4)))
+gridExtra::grid.arrange(plots[[12]], plots[[13]],plots[[14]],plots[[15]], layout_matrix = rbind(c(1,2),c(3,4)))
+```
+
+Of course, all 16 plots could be overlapped instead of plotting them 4 at a time, but let's leave this for now.
+
+# Density
+
+Now we will explore the density of the polygons. The steps will be very similar to those from the "Flow" section.
+
+Density = N / m2
+
+N = number of agents
+
+## GCS density
+
+First, polygon area needs to be measured and then density can be found.
+```{r}
+# calculate area size
+gcs_walls_area = polygon_walls |> sf::st_area()
+
+# group by seconds and then measure density
+gcs_d = frames_sf_m |> 
+  sf::st_drop_geometry() |> 
+  dplyr::group_by(sec) |> 
+  dplyr::summarise(n = dplyr::n(),
+                   frame = frame) |> 
+  dplyr::mutate(
+    density = n / gcs_walls_area 
+  )
+
+gcs_d |> head()
+```
+
+Time to plot density over time (seconds).
+
+```{r}
+plot_density = ggplot2::ggplot(gcs_d)+
+  ggplot2::aes(x = sec,
+               y = density)+
+  ggplot2::geom_line()
+
+ggplot2::ggplot(gcs_d)+
+  ggplot2::aes(x = sec,
+               y = density)+
+  ggplot2::geom_line() +
+  ggplot2::geom_line(data = gcs_d,
+                     ggplot2::aes(x = sec,
+                                  y = n),
+                     col = "red")
+
+print(plot_density)
+```
+
+It looks exactly like the flow plot as only metric (y axis) changed.
+
+## Divided GCS density
+
+```{r}
+# find out the area size of each polygon
+gcs_area = list()
+for (i in 1:lengths(gcs_div_sf)){
+  gcs_area[[i]] = sf::st_area(gcs_div_sf[[i]]) 
+  print(gcs_area)
+}
+# make it a vector
+gcs_area = gcs_area |>
+  unlist() |>
+  as.vector()
+
+# add area as a new column
+# frames_a = list()
+# for (i in 1:length(gcs_frames_joined_grouped)){
+#   frames_a[[i]] = gcs_frames_joined_grouped[[i]] |> dplyr::mutate(area = gcs_area[i])
+# }
+```
+
+```{r}
+# find density for each group in each list
+frames_d = list()
+for (i in 1:length(gcs_area)){
+  frames_d[[i]] = frames_a[[i]] |> dplyr::mutate(density = n / gcs_area[i])
+}
+```
+
+Plotting densities!
+They should be identical to flow plots.
+
+```{r}
+plots_den = list()
+for (i in 1:length(frames_d)){
+  plots_den[[i]] = ggplot2::ggplot(frames_d[[i]]) +
+    ggplot2::aes(x = sec,
+                 y = density) +
+    ggplot2::geom_line() 
+  # print(plots_den)
+}
+
+# let's plot a polygons 1-4 and 5-8
+gridExtra::grid.arrange(plots_den[[1]], plots_den[[2]],plots_den[[3]],plots_den[[4]], layout_matrix = rbind(c(1,2),c(3,4)))
+gridExtra::grid.arrange(plots_den[[13]],plots_den[[14]],plots_den[[15]], plots_den[[16]], layout_matrix = rbind(c(1,2),c(3,4)))
+```
+
+# Speed
+
+Speed != Velocity
+
+
+# Further tasks:
+
+- [ ]  create environment as an sf object
