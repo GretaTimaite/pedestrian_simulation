@@ -3,6 +3,8 @@ title: "gcs"
 format: html
 ---
 
+A link to this file in RPubs: https://rpubs.com/greta/921646
+
 # Get data
 
 ```{r, eval = F}
@@ -146,6 +148,7 @@ frames_sf = frames_matrix1 |>
 # Draw GCS environment in metres
 
 In this section Grand Central Station's environment is drawn. 
+
 ```{r}
 # concourse parameters: width(x) = 53, height(y) = 50;
 gcs_env_m = function(){
