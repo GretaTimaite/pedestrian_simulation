@@ -91,34 +91,24 @@ distance_matrix_list[[5]][2,1] # second row in matrix 1 ([1,1] would return 0 as
 # first let's create a list to store joined lists
 agent_dist_list = list()
 # a list to store values of a shorter (intermediate) list of dataframes
-agent_list_new = list()
-# another list for joined lists 
-joined = list() 
+dist_list_new = list()
 # create a loop
 # first we will create an intermediate list of dataframes
 for (i in 1:length(agent_list)){
-  agent_list_new[[i]] = agent_list[[i]][2:nrow(agent_list[[i]]),] # create shorter DFs by dropping the first row which indicates the starting point of an agent
-  joined[[i]] = cbind(agent_list_new[[i]],
-                      distance_matrix[[i]])
-  # spatial join
-  agent_dist_list[[i]] = sf::st_join(agent_list[[i]],
-                                     joined[[i]],
-                                     left = T) # left join
+  dist_list_new[[i]] = rbind(data.frame("dist" = 0),
+                             distance_list[[i]]) # adding a new row on top of the dataframes in the distance_list, 
+  # so their length matches the length of DFs in the agent_list
+  agent_dist_list[[i]] = cbind(agent_list[[i]],
+                               dist_list_new[[i]]) # joining dataframes by column
 }
 
-dist1_test = distance_list[[1]] |> unlist() |> as.data.frame() 
-colnames(dist1_test) = "dist"
-agent1_test = agent_list_new[[1]] |> dplyr::select(-dist)
-  
-# joined_test = dplyr::inner_join(agent_list_new[[1]], dist1_test)
-joined = cbind(agent1_test[2:220,], distance_list[[1]])
-joined1 = sf::st_full_join(agent_list_new[[1]], joined,
-                      left = F)
-joined1 = dplyr::(agent_list_new[[1]], joined)
-# joined3 = dplyr::left_join(dist1_test, agent1_test)
+# check
+agent_dist_list[[1]]
+# looks good, we have 220 rows and the first one has a distance column equal to 0 (ie starting point)
 
-dist1_test1 = rbind(data.frame("dist" = 0), dist1_test)
-
+# let's save agent_dist_list for future uses as .dat file
+save(agent_dist_list,
+     file = "agent_dist_list.dat")
 
 
 
