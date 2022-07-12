@@ -109,6 +109,8 @@ agent_dist_list[[1]]
 # let's save agent_dist_list for future uses as .dat file
 save(agent_dist_list,
      file = "agent_dist_list.dat")
+saveRDS(agent_dist_list,
+     file = "agent_dist_list.rds")
 
 
 
