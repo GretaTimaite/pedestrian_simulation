@@ -44,7 +44,7 @@ for (i in 1:length(agent_list)){
 # create a function that accepts a list of matrices
 dist_function = function(list_matrix = list()){ # accepts lists
   dist_list = list() # empty list to store new lists
-  for(i in 1:length(list_matrix)){ # reiteration over the length of a list
+  for (i in 1:length(list_matrix)){ # reiteration over the length of a list
     k = i # initialisation of a matrix row
     j = k + 1  # initialisation of a matrix column, it needs to be + 1 compared to the row as otherwise we will get distance equal to 0 
     # (there's no distance traveled from, e.g. frame 2 to frame 2)
@@ -63,7 +63,11 @@ distance_list = list()
 # loop over `distance_matrix_list` and apply a `dist_function()`
 # system.time( # to measure how long it takes to run 
 for (i in 1:length(distance_matrix_list)){
-  distance_list[[i]] = distance_matrix_list[[i]] |> dist_function()
+  distance_list[[i]] = distance_matrix_list[[i]] |> 
+    dist_function() |> # apply the new function
+    unlist() |> 
+    as.data.frame() # create a dataframe (will be useful in later steps)
+  colnames(distance_list[[i]]) = "dist" # rename a column
 }
 # )
 
@@ -81,4 +85,42 @@ sf::st_distance(agent_list[[5]][1,3], # frame 1 of agent 5
 #> [1,] 0.1474067
 distance_matrix_list[[5]][2,1] # second row in matrix 1 ([1,1] would return 0 as there's the distance from frame 1 to frame 1 equals to 0) of agent 5.
 #> [1] 0.1474067
+
+## it's time to join distance_list to agents_list
+# NOTE: our lists are of unequal row lengths, hence we will have to do two intermediate steps
+# first let's create a list to store joined lists
+agent_dist_list = list()
+# a list to store values of a shorter (intermediate) list of dataframes
+agent_list_new = list()
+# another list for joined lists 
+joined = list() 
+# create a loop
+# first we will create an intermediate list of dataframes
+for (i in 1:length(agent_list)){
+  agent_list_new[[i]] = agent_list[[i]][2:nrow(agent_list[[i]]),] # create shorter DFs by dropping the first row which indicates the starting point of an agent
+  joined[[i]] = cbind(agent_list_new[[i]],
+                      distance_matrix[[i]])
+  # spatial join
+  agent_dist_list[[i]] = sf::st_join(agent_list[[i]],
+                                     joined[[i]],
+                                     left = T) # left join
+}
+
+dist1_test = distance_list[[1]] |> unlist() |> as.data.frame() 
+colnames(dist1_test) = "dist"
+agent1_test = agent_list_new[[1]] |> dplyr::select(-dist)
+  
+# joined_test = dplyr::inner_join(agent_list_new[[1]], dist1_test)
+joined = cbind(agent1_test[2:220,], distance_list[[1]])
+joined1 = sf::st_full_join(agent_list_new[[1]], joined,
+                      left = F)
+joined1 = dplyr::(agent_list_new[[1]], joined)
+# joined3 = dplyr::left_join(dist1_test, agent1_test)
+
+dist1_test1 = rbind(data.frame("dist" = 0), dist1_test)
+
+
+
+
+
 
