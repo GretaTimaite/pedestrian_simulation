@@ -98,7 +98,7 @@ frames_final = frames_dist_df |>
 #           "frames_final.csv")
 
 ##======================          
-## Plotting fundamentals
+## Plotting fundamentals for the entire env
 
 # let's add a sec column
 # 1 sec = 25 frames
@@ -107,8 +107,7 @@ frames_sec = frames |>
 
 frames_sec |> dplyr::filter(sec < 1)
 
-# Density 
-# adapted from here: https://github.com/GretaTimaite/pedestrian_simulation/blob/main/gcs_density.R
+# density adapted from here: https://github.com/GretaTimaite/pedestrian_simulation/blob/main/gcs_density.R
 
 matrix_walls = matrix(c(0,0,0,50,53,50, 53,0,0,0),
                       ncol = 2,
@@ -118,22 +117,33 @@ polygon_walls = sf::st_polygon(matrixlist_walls)
 gcs_walls_area = polygon_walls |> sf::st_area()
 
 den = frames_sec |> 
-  dplyr::group_by(sec) |> 
+  dplyr::group_by(frame) |> 
   dplyr::summarise(n = dplyr::n(),
-                   density = n / gcs_walls_area,
-                   speed = sum(dist)/n,
-                   speed1 = dist/n)  
+                   density = n / gcs_walls_area)  
 
-
+# average speed per frame
 test= frames_sec |> 
   dplyr::group_by(frame) |> 
   dplyr::summarise(n = dplyr::n()) 
 test2 = frames_sec |> 
+  dplyr::filter(dist != 0) |> 
   dplyr::group_by(frame) |> 
   dplyr::summarise(dist_sum = sum(dist))
 test2[1035,]
 test_joined = dplyr::left_join(test, test2) |> 
-  dplyr::mutate(speed_av = dist_sum/n)
+  dplyr::mutate(speed_av = dist_sum/n) 
 
+test_joined2 = dplyr::left_join(test_joined, den)
 
+ggplot2::ggplot(data = test_joined2,
+                ggplot2::aes(x = speed_av,
+                            y = density))+
+  ggplot2::geom_point()
+
+cor.test(test_joined2$speed_av,
+    test_joined2$density,
+    method = "pearson")
+
+##=======================
+# Plotting fundamentals for each divided area
 
