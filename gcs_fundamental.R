@@ -8,8 +8,16 @@
 # Thus, we need to group distances (ie speed per frame), sum them and divide by the number of pedestrians to get an average speed per frame
 # (most likely a ) S(av) = sum(agent distance per frame)/N(agents per frame)
 
+##====================== 
+## Getting data
+
+# NOTE: skip this section (start from line 100) if you download the prepped 'frames' data
+frames = read.csv("https://github.com/GretaTimaite/pedestrian_simulation/releases/download/data/frames_final.csv")
+
+# NOTE: the rest of this section shows how I got `frames` dataset
 frames_df = read.csv("https://github.com/GretaTimaite/pedestrian_simulation/releases/download/data/gcs_frames.csv")
 agent_dist_list = readRDS(url("https://github.com/GretaTimaite/pedestrian_simulation/releases/download/data/agent_dist_list.rds"))
+
 
 # problem: our `agent_dist_list` list that has distance values are sorted by agents,
 # thus we cannot simply group all the lists by frame unless we unlist them first.
@@ -24,27 +32,26 @@ agent_dist_list = readRDS(url("https://github.com/GretaTimaite/pedestrian_simula
 #               join = st_within)
 
 ## Note: splitting geometry column into x and y coordinates to join non-spatially by x or y coordinates did not work nicely either.
-
-new_df1 = agent_dist_list[[1]] |> 
-  dplyr::mutate(x_coord = purrr::map(agent_dist_list[[1]]$geometry,1) |> unlist(),
-                y_coord = purrr::map(agent_dist_list[[1]]$geometry,2) |> unlist()) |> 
-  # dplyr::select(x_coord,dist) |> 
-  sf::st_drop_geometry() 
-frames_df0 = frames_df |> 
-  dplyr::filter(ID == 0) |> 
-  dplyr::mutate(x_coord = (x_coord/ 14) |> unlist(),
-                y_coord = (y_coord / 14) |> unlist()) 
-new_joined = dplyr::left_join(frames_df0, new_df1[c("dist", "x_coord")], 
-                              by = c("x_coord" = "x_coord"))
-# So, even though numbers are equal, they are not 
-all.equal(frames_df0$y_coord[1],
-          new_df1$y_coord[1])
-#>[1] TRUE
-identical(frames_df0$y_coord[1],
-          new_df1$y_coord[1])
-#>[1] FALSE
-frames_df0$x_coord[1] == new_df1$x_coord[1]
-#>[1] FALSE
+# new_df1 = agent_dist_list[[1]] |> 
+#   dplyr::mutate(x_coord = purrr::map(agent_dist_list[[1]]$geometry,1) |> unlist(),
+#                 y_coord = purrr::map(agent_dist_list[[1]]$geometry,2) |> unlist()) |> 
+#   # dplyr::select(x_coord,dist) |> 
+#   sf::st_drop_geometry() 
+# frames_df0 = frames_df |> 
+#   dplyr::filter(ID == 0) |> 
+#   dplyr::mutate(x_coord = (x_coord/ 14) |> unlist(),
+#                 y_coord = (y_coord / 14) |> unlist()) 
+# new_joined = dplyr::left_join(frames_df0, new_df1[c("dist", "x_coord")], 
+#                               by = c("x_coord" = "x_coord"))
+# # So, even though numbers are equal, they are not 
+# all.equal(frames_df0$y_coord[1],
+#           new_df1$y_coord[1])
+# #>[1] TRUE
+# identical(frames_df0$y_coord[1],
+#           new_df1$y_coord[1])
+# #>[1] FALSE
+# frames_df0$x_coord[1] == new_df1$x_coord[1]
+# #>[1] FALSE
 
 # SOLUTION
 # we will group the frames_df dataframe by an agent ID and join with a matching list in agent_dist_list, thus creating a new list. 
@@ -87,7 +94,46 @@ frames_final = frames_dist_df |>
   dplyr::select(-ID.x) |> 
   dplyr::rename(ID = ID.y)
 # save as csv
-write.csv(frames_final,
-          "frames_final.csv")
+# write.csv(frames_final,
+#           "frames_final.csv")
 
-          
+##======================          
+## Plotting fundamentals
+
+# let's add a sec column
+# 1 sec = 25 frames
+frames_sec = frames |> 
+  dplyr::mutate(sec = frame / 25)
+
+frames_sec |> dplyr::filter(sec < 1)
+
+# Density 
+# adapted from here: https://github.com/GretaTimaite/pedestrian_simulation/blob/main/gcs_density.R
+
+matrix_walls = matrix(c(0,0,0,50,53,50, 53,0,0,0),
+                      ncol = 2,
+                      byrow = TRUE)
+matrixlist_walls = list(matrix_walls)
+polygon_walls = sf::st_polygon(matrixlist_walls)
+gcs_walls_area = polygon_walls |> sf::st_area()
+
+den = frames_sec |> 
+  dplyr::group_by(sec) |> 
+  dplyr::summarise(n = dplyr::n(),
+                   density = n / gcs_walls_area,
+                   speed = sum(dist)/n,
+                   speed1 = dist/n)  
+
+
+test= frames_sec |> 
+  dplyr::group_by(frame) |> 
+  dplyr::summarise(n = dplyr::n()) 
+test2 = frames_sec |> 
+  dplyr::group_by(frame) |> 
+  dplyr::summarise(dist_sum = sum(dist))
+test2[1035,]
+test_joined = dplyr::left_join(test, test2) |> 
+  dplyr::mutate(speed_av = dist_sum/n)
+
+
+
