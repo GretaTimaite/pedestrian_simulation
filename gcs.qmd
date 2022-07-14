@@ -201,9 +201,12 @@ gcs_env_m = function(){
           y = c(0, -3, -3, 0),
           border = "red",
           lwd = 2) # exit 0
-  polygon(x = c(21, 18, 15, 15, 18, 21, 24, 24, 21),
-          y = c(21, 21, 24, 27, 30, 30, 27, 24, 21),
-          col = "red") # information booth (an obstacle)
+  # polygon(x = c(21, 18, 15, 15, 18, 21, 24, 24, 21),
+  #         y = c(21, 21, 24, 27, 30, 30, 27, 24, 21),
+  #         col = "red") # information booth (an obstacle)
+    plotrix::draw.circle(x = 24.6, y = 20, 
+                       radius = 4, 
+                       col = "red") # obstacle 
   # annotation of a plot
   text(x = -4,
        y = 15,
@@ -245,6 +248,7 @@ gcs_env_m = function(){
        label = "Exit 0")
 }
 gcs_env_m()
+frames_sf |> dplyr::mutate(geometry = geometry/14) |> sf::st_geometry() |> plot(add = T)
 ```
 
 # Draw GCS environment in pixels
@@ -304,10 +308,12 @@ gcs_env_p = function(){
           y = c(0, -42, -42, 0),
           border = "red",
           lwd = 2) # exit 0
-  polygon(x = c(294, 252, 210, 210, 252, 294, 336, 336, 294),
-          y = c(294, 294, 336, 378, 420, 420, 378, 336, 294),
-          col = "red") # information booth (an obstacle)
-  
+  # polygon(x = c(294, 252, 210, 210, 252, 294, 336, 336, 294),
+  #         y = c(294, 294, 336, 378, 420, 420, 378, 336, 294),
+  #         col = "red") # information booth (an obstacle)
+  plotrix::draw.circle(x = 345.0, y = 280, 
+                       radius = 56, 
+                       col = "red") # obstacle 
   # annotation of a plot
   text(x = -56,
        y = 210,
@@ -349,6 +355,7 @@ gcs_env_p = function(){
        label = "Exit 0")
 }
 gcs_env_p()
+frames_sf |> sf::st_geometry() |> plot(add = T)
 ```
 
 ```{r}
