@@ -104,8 +104,9 @@ frames_final = frames_dist_df |>
 # 1 sec = 25 frames
 frames_sec = frames |> 
   dplyr::mutate(sec = frame / 25)
-
-frames_sec |> dplyr::filter(sec < 1)
+frames_sec_sf = frames_sec |> 
+  sf::st_as_sf(coords = c("x_coord", "y_coord")) |> 
+  dplyr::mutate(geometry = geometry/14)
 
 # density adapted from here: https://github.com/GretaTimaite/pedestrian_simulation/blob/main/gcs_density.R
 
@@ -146,4 +147,49 @@ cor.test(test_joined2$speed_av,
 
 ##=======================
 # Plotting fundamentals for each divided area
+# divide gcs polygon by creating a grid
+gcs_div = sf::st_make_grid(polygon_walls, 
+                           n = 2, #2x2
+                           what = "polygons")
+# convert gcs_div to an sf object
+gcs_div_sf = gcs_div |> 
+  sf::st_as_sf() |> 
+  dplyr::rename(geom = x)
+
+# first create a list to store our multiple dataframes
+gcs_frames_joined1 = list()
+for (i in 1:lengths(gcs_div_sf)){
+  gcs_frames_joined1[[i]] = frames_sec_sf[gcs_div_sf[i,], op = sf::st_intersects] 
+}
+
+# find out the area size of each polygon
+gcs_area = list()
+for (i in 1:lengths(gcs_div_sf)){
+  gcs_area[[i]] = sf::st_area(gcs_div_sf[[i]]) 
+  print(gcs_area)
+}
+# make it a vector
+gcs_area = gcs_area |>
+  unlist() |>
+  as.vector()
+
+frames_d1 = list()
+for (i in 1:length(gcs_area)){
+  frames_d1[[i]] = gcs_frames_joined1[[i]] |>
+    dplyr::group_by(frame) |> 
+    dplyr::summarise(n = dplyr::n()) |> 
+    dplyr::mutate(density = n / gcs_area[i])
+}
+
+frames_s1 = list()
+for (i in 1:length(gcs_area)){
+  frames_s1[[i]] = gcs_frames_joined1[[i]] |> 
+    dplyr::filter(dist != 0) |> 
+    dplyr::group_by(frame) |> 
+    dplyr::summarise(n = dplyr::n(),
+                     dist_sum = sum(dist),
+                     speed_av = dist_sum / n)
+}
+
+
 
