@@ -23,67 +23,71 @@ agent_dist_list = readRDS(url("https://github.com/GretaTimaite/pedestrian_simula
 #   sf::st_join(agent_dist_list[[1]],
 #               join = st_within)
 
-## let's split geometry column into x and y coordinates to apply non-spatial join.
+## Note: splitting geometry column into x and y coordinates to join non-spatially by x or y coordinates did not work nicely either.
 
-new_df1 = agent_dist_list[[1]] |>  
-  dplyr::mutate(geometry = geometry) 
-new_df1 = new_df1 |> 
-  dplyr::mutate(x_coord = purrr::map(new_df1$geometry,1) |> unlist() |> round(1),
-                y_coord = purrr::map(new_df1$geometry,2) |> unlist() |> round(1)) |> 
+new_df1 = agent_dist_list[[1]] |> 
+  dplyr::mutate(x_coord = purrr::map(agent_dist_list[[1]]$geometry,1) |> unlist(),
+                y_coord = purrr::map(agent_dist_list[[1]]$geometry,2) |> unlist()) |> 
   # dplyr::select(x_coord,dist) |> 
-  sf::st_drop_geometry() |> 
-  dplyr::group_by(x_coord)
+  sf::st_drop_geometry() 
 frames_df0 = frames_df |> 
   dplyr::filter(ID == 0) |> 
-  dplyr::mutate(x_coord = (x_coord/ 14) |> unlist() |> round(1),
-                y_coord = (y_coord / 14) |> unlist() |> round(1)) |> 
-  dplyr::group_by(x_coord)
-new_joined = dplyr::left_join(new_df1[c("dist", "x_coord")], frames_df0, 
+  dplyr::mutate(x_coord = (x_coord/ 14) |> unlist(),
+                y_coord = (y_coord / 14) |> unlist()) 
+new_joined = dplyr::left_join(frames_df0, new_df1[c("dist", "x_coord")], 
                               by = c("x_coord" = "x_coord"))
-
-new_cbind = cbind(frames_df_new, new_df1)
-
-frames_df0$y_coord %in% new_df1$y_coord
-match(frames_df0$y_coord[1:2],
-      new_df1$y_coord[1:2])
+# So, even though numbers are equal, they are not 
 all.equal(frames_df0$y_coord[1],
           new_df1$y_coord[1])
-frames_df0$y_coord == new_df1$y_coord
-identical(frames_df0$y_coord,
-          new_df1$y_coord)
+#>[1] TRUE
+identical(frames_df0$y_coord[1],
+          new_df1$y_coord[1])
+#>[1] FALSE
+frames_df0$x_coord[1] == new_df1$x_coord[1]
+#>[1] FALSE
 
-# for some reason joining via x or y coordinates is not successful as not all values are identical (?),
+# SOLUTION
+# we will group the frames_df dataframe by an agent ID and join with a matching list in agent_dist_list, thus creating a new list. 
+# Then we will extract each list and simply join all of them by row (since columns will be identical)
 
-new_joined1 = dplyr::left_join(
-  new_df1[c("frame", "dist")] |> dplyr::group_by(frame),
-  frames_df0 |> dplyr::group_by(frame),
-  by = c("frame" = "frame"))
-
-# ========== working (more or less)
-joined_df = data.frame()
+# a dataframe to store our final output
+frames_dist_df = data.frame()
+# a bunch of temp_lists for intermediate steps
 temp_list = list()
 temp_list1 = list()
 temp_list2 = list()
   for (i in 1:length(agent_dist_list)){
-    temp_list[[i]] = agent_dist_list[[i]][c("dist", "frame", "ID")] |> sf::st_drop_geometry() |> dplyr::group_by(frame)
-    temp_list1[[i]] = frames_df |> dplyr::filter(ID == unique(agent_dist_list[[i]]$ID)) |> dplyr::group_by(frame)
+    temp_list[[i]] = agent_dist_list[[i]][c("dist", "frame", "ID")] |> # extract only columns we need
+      sf::st_drop_geometry() |> # drop geometry column
+      dplyr::arrange(frame) # arrange by frame (just for sanity's sake to ensure ascending order)
+    temp_list1[[i]] = frames_df |> 
+      dplyr::filter(ID == unique(agent_dist_list[[i]]$ID)) |>
+      dplyr::arrange(frame) # arrange by frame (just for sanity's sake to ensure ascending order)
     temp_list2[[i]] = dplyr::left_join(temp_list[[i]],
                                        temp_list1[[i]],
-                                       by = c("frame" = "frame")
+                                       by = c("frame" = "frame") # join by frame
                                        )
-    # joined_df = temp_list2[[1]]
-    # i = i
-    # k = i + 1
-    # if (k < length(temp_list2)) {
-      joined_df = rbind(joined_df, temp_list2[[i]]) |> dplyr::distinct(.keep_all = TRUE)
-    # }
-    # else {
-    #   break
-    # }
+      frames_dist_df = rbind(frames_dist_df, # df to append (add rows to)
+                        temp_list2[[i]]) |> # what is being appended
+        dplyr::distinct(.keep_all = TRUE) # keeping only distinct (unique) rows. This is needed as the last list gets added twice.
+      # I think this is because we need to append to something (empty dataframe does not work), hence it appends the last list in the temp_list2
   }
 
-test= rbind(temp_list2[[1]],
-            temp_list2[[2]])
+# A good guess that the join worked is the fact that we have the same rows in both frames_df and newly created frames_dist_df.
+## a quick check that a randomly selected list in both temp_list and temp_list1 have identical frames (spoiler alert: yes)
+# identical(temp_list[[131]]$frame,
+#           temp_list[[131]]$frame)
 
-frames_df_short = frames_df |> dplyr::select(ID,dist,frame)
+## another quick check 
+# identical(frames_dist_df |> dplyr::filter(ID.x == 121) |> dplyr::select(x_coord),
+#           frames_df |> dplyr::filter(ID == 121) |> dplyr::select(x_coord))
 
+# Let's drop one of the ID columns and rename another to a more sensible one
+frames_final = frames_dist_df |> 
+  dplyr::select(-ID.x) |> 
+  dplyr::rename(ID = ID.y)
+# save as csv
+write.csv(frames_final,
+          "frames_final.csv")
+
+          
