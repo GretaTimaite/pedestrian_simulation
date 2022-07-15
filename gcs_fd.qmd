@@ -3,9 +3,9 @@ title: "gcs_fund"
 format: html
 ---
 
-# AIM: 
+# Introduction
 
-The aim of this notebook is to *plot fundamental diagrams* (speed ~ density). A fundamental diagram denotes to the linear relationship between average speed (or velocity) and density (or flow) of an agent, usually vehicles and pedestrians.
+The aim of this notebook is to **plot fundamental diagrams** (speed ~ density). A fundamental diagram denotes to the linear relationship between average speed (or velocity) and density (or flow) of an agent, usually vehicles and pedestrians.
 
 Density = N/Area
 
@@ -34,7 +34,7 @@ https://github.com/GretaTimaite/pedestrian_simulation/blob/main/gcs_fundamental.
 frames_sec = frames |> 
   dplyr::mutate(sec = frame / 25)
 frames_sec_sf = frames_sec |> 
-  sf::st_as_sf(coords = c("x_coord", "y_coord")) |> 
+  sf::st_as_sf(coords = c("x_coord", "y_coord")) |> # turn into an sf object 
   dplyr::mutate(geometry = geometry/14) # geometry in metres
 ```
 
@@ -124,6 +124,7 @@ for (i in 1:lengths(gcs_div_sf)){
   gcs_area[[i]] = sf::st_area(gcs_div_sf[[i]]) 
   print(gcs_area)
 }
+
 # make it a vector
 gcs_area = gcs_area |>
   unlist() |>
