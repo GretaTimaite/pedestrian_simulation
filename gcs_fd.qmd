@@ -1,0 +1,196 @@
+---
+title: "gcs_fund"
+format: html
+---
+
+# AIM: 
+
+The aim of this notebook is to *plot fundamental diagrams* (speed ~ density). A fundamental diagram denotes to the linear relationship between average speed (or velocity) and density (or flow) of an agent, usually vehicles and pedestrians.
+
+Density = N/Area
+
+Speed(av) = sum(agent distance per frame)/N
+
+N -> number of agents
+
+Area -> an area in which agents are counted
+
+A quick note on code: the code is not neat and could be further refined as it involves some steps that are not really relevant to the end result (e.g. creating `frames_sec` DF)
+
+# Get data
+
+```{r}
+frames = read.csv("https://github.com/GretaTimaite/pedestrian_simulation/releases/download/data/frames_final.csv")
+```
+
+If you want to see how this dataset was created, see this R script: 
+https://github.com/GretaTimaite/pedestrian_simulation/blob/main/gcs_fundamental.R
+
+# Plotting fundamentals for the entire gcs env
+
+```{r}
+# let's add a sec column
+# 1 sec = 25 frames
+frames_sec = frames |> 
+  dplyr::mutate(sec = frame / 25)
+frames_sec_sf = frames_sec |> 
+  sf::st_as_sf(coords = c("x_coord", "y_coord")) |> 
+  dplyr::mutate(geometry = geometry/14) # geometry in metres
+```
+
+## Density
+
+We need to find out area and densities of groups.
+```{r}
+# density adapted from here: https://github.com/GretaTimaite/pedestrian_simulation/blob/main/gcs_density.R
+
+matrix_walls = matrix(c(0,0,0,50,53,50, 53,0,0,0),
+                      ncol = 2,
+                      byrow = TRUE)
+matrixlist_walls = list(matrix_walls)
+polygon_walls = sf::st_polygon(matrixlist_walls)
+gcs_walls_area = polygon_walls |> sf::st_area()
+
+den = frames_sec |> 
+  dplyr::group_by(frame) |> 
+  dplyr::summarise(n = dplyr::n(),
+                   density = n / gcs_walls_area)  
+```
+
+## Average speed
+
+Finding out average agent speed per frame.
+
+```{r}
+# average speed per frame
+test= frames_sec |> 
+  dplyr::group_by(frame) |> 
+  dplyr::summarise(n = dplyr::n()) 
+test2 = frames_sec |> 
+  dplyr::filter(dist != 0) |> # filter our starting points (ie the rows that have dist = 0)
+  dplyr::group_by(frame) |> 
+  dplyr::summarise(dist_sum = sum(dist)) # summing up the total distance of agents in a group
+test_joined = dplyr::left_join(test, test2) |> 
+  dplyr::mutate(speed_av = dist_sum/n) # average speed (see formula at the start of the notebook)
+test_joined2 = dplyr::left_join(test_joined, den)
+
+```
+
+## Plotting FD!
+
+```{r}
+ggplot2::ggplot(data = test_joined2,
+                ggplot2::aes(x = speed_av,
+                            y = density))+
+  ggplot2::geom_point()
+```
+
+# Plotting fundamentals for each divided area
+
+In this section we will divide the GCS into equal size polygons and plot a fundamental diagram for each of it.
+It should be noted that the division is random but, ideally, one would carefully choose the areas of measurement to get the most out of it.
+
+```{r}
+# divide gcs polygon by creating a grid
+gcs_div = sf::st_make_grid(polygon_walls, 
+                           n = 2, # 2x2 (creates 4 polygons)
+                           what = "polygons")
+# convert gcs_div to an sf object
+gcs_div_sf = gcs_div |> 
+  sf::st_as_sf() |> 
+  dplyr::rename(geom = x)
+```
+
+Now let's create a new list storing a number of dataframes equal to the number of newly created polygons. We will find out which rows (agent locations in different frames) intersect with which polygon and store these as separate dataframes. We wil be creating a fundamental diagram for each polygon.
+
+```{r}
+# first create a list to store our new datasets 
+gcs_frames_joined1 = list()
+for (i in 1:lengths(gcs_div_sf)){
+  gcs_frames_joined1[[i]] = frames_sec_sf[gcs_div_sf[i,], op = sf::st_intersects] 
+}
+```
+
+## Density
+
+The following chunk of code is adapted from the gcs_density.R script: 
+
+https://github.com/GretaTimaite/pedestrian_simulation/blob/main/gcs_density.R
+
+```{r}
+# find out the area size of each polygon
+gcs_area = list()
+for (i in 1:lengths(gcs_div_sf)){
+  gcs_area[[i]] = sf::st_area(gcs_div_sf[[i]]) 
+  print(gcs_area)
+}
+# make it a vector
+gcs_area = gcs_area |>
+  unlist() |>
+  as.vector()
+
+# let's group each dataframe in a `gcs_frames_joined1` list by frame to find out density
+frames_d1 = list()
+for (i in 1:length(gcs_area)){
+  frames_d1[[i]] = gcs_frames_joined1[[i]] |>
+    dplyr::group_by(frame) |> 
+    dplyr::summarise(n = dplyr::n()) |> 
+    dplyr::mutate(density = n / gcs_area[i])
+}
+```
+
+## Average speed
+
+```{r}
+# a list with dataframes (denoting to different polygons) containing average speed of agents per frame
+frames_s1 = list()
+for (i in 1:length(gcs_area)){
+  frames_s1[[i]] = gcs_frames_joined1[[i]] |> 
+    dplyr::filter(dist != 0) |> # filter out agent starting points (eg distance = 0)
+    dplyr::group_by(frame) |> 
+    dplyr::summarise(n = dplyr::n(), # number of agents per frame
+                     dist_sum = sum(dist), # total sum
+                     speed_av = dist_sum / n) # average speed
+}
+```
+
+```{r}
+# join dataframes in `frames_d1` and `frames_s1` lists accordingly (will help when plotting)
+frames_ds = list()
+for (i in 1:length(frames_d1)){
+  frames_ds[[i]] = dplyr::left_join(frames_d1[[i]] |> sf::st_drop_geometry(),
+                                    frames_s1[[i]] |> sf::st_drop_geometry())
+}
+```
+
+## Plotting
+
+```{r}
+plots_ds = list()
+for (i in 1:length(frames_ds)){
+  plots_ds[[i]] = ggplot2::ggplot(frames_ds[[i]]) +
+    ggplot2::aes(x = speed_av,
+                 y = density) +
+    ggplot2::geom_line() 
+  # print(plots_den)
+}
+gridExtra::grid.arrange(plots_ds[[1]], plots_ds[[2]],plots_ds[[3]],plots_ds[[4]], layout_matrix = rbind(c(1,2),c(3,4)))
+
+```
+
+# Conclusions
+
+Fundamental diagrams do not show the expected negative slope -- the increase in density does not lead to a decreased speed. Indeed, a reverse pattern can be seen in all 4 plots. This might have happened because in all 4 areas density is low, thus no congestion occurs. An increase in average speed and density might be a result of a new agent entering the area that walks fast, thus boosting the av.speed and density (a little bit!). Thus, it could be useful to pick a dense location near the exits and plot a FD for it. Indeed, a density next to an exit could be compared to an adjacent area that leads to an exit but is not as crowded.
+
+Also it could be interesting to experiment with different agent numbers in JPS to figure out when/how congestion occurs, thus leading to the expected outcome -- as density increases, speed/velocity decreases.
+
+
+
+
+
+
+
+
+
+
+
