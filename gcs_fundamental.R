@@ -6,7 +6,7 @@
 # Currently density is an aggregate metric (D = N/area2) while speed is agent-focused.
 # Speed needs to be aggregated and averaged to get a single number to plot againt density
 # Thus, we need to group distances (ie speed per frame), sum them and divide by the number of pedestrians to get an average speed per frame
-# (most likely a ) S(av) = sum(agent distance per frame)/N(agents per frame)
+# S(av) = sum(agent distance per frame)/N(agents per frame)
 
 ##====================== 
 ## Getting data
@@ -191,5 +191,20 @@ for (i in 1:length(gcs_area)){
                      speed_av = dist_sum / n)
 }
 
+frames_ds = list()
+for (i in 1:length(frames_d1)){
+  frames_ds[[i]] = dplyr::left_join(frames_d1[[i]] |> sf::st_drop_geometry(),
+                                    frames_s1[[i]] |> sf::st_drop_geometry())
+}
 
+# plotting!
+plots_ds = list()
+for (i in 1:length(frames_ds)){
+  plots_ds[[i]] = ggplot2::ggplot(frames_ds[[i]]) +
+    ggplot2::aes(x = speed_av,
+                 y = density) +
+    ggplot2::geom_line() 
+  # print(plots_den)
+}
+gridExtra::grid.arrange(plots_ds[[1]], plots_ds[[2]],plots_ds[[3]],plots_ds[[4]], layout_matrix = rbind(c(1,2),c(3,4)))
 
