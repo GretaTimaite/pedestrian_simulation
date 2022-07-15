@@ -208,3 +208,15 @@ for (i in 1:length(frames_ds)){
 }
 gridExtra::grid.arrange(plots_ds[[1]], plots_ds[[2]],plots_ds[[3]],plots_ds[[4]], layout_matrix = rbind(c(1,2),c(3,4)))
 
+
+# Conclusions
+
+# Fundamental diagrams do not show the expected negative slope -- the increase in density does not lead to a 
+# decreased speed. Indeed, a reverse pattern can be seen in all 4 plots. This might have happened because in all 4 
+# areas density is low, thus no congestion occurs. An increase in average speed and density might be a result of a 
+# new agent entering the area that walks fast, thus boosting the av.speed and density (a little bit!). 
+# Thus, it could be useful to pick a dense location near the exits and plot a FD for it. I
+# ndeed, a density next to an exit could be compared to an adjacent area that leads to an exit but is not as crowded.
+# 
+# Also it could be interesting to experiment with different agent numbers in JPS to figure out when/how congestion 
+# occurs, thus leading to the expected outcome -- as density increases, speed/velocity decreases.
