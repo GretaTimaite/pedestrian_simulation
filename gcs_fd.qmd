@@ -80,8 +80,8 @@ test_joined2 = dplyr::left_join(test_joined, den)
 
 ```{r}
 ggplot2::ggplot(data = test_joined2,
-                ggplot2::aes(x = speed_av,
-                            y = density))+
+                ggplot2::aes(x = density,
+                            y = speed_av))+
   ggplot2::geom_point()
 ```
 
@@ -170,9 +170,9 @@ for (i in 1:length(frames_d1)){
 plots_ds = list()
 for (i in 1:length(frames_ds)){
   plots_ds[[i]] = ggplot2::ggplot(frames_ds[[i]]) +
-    ggplot2::aes(x = speed_av,
-                 y = density) +
-    ggplot2::geom_line() 
+    ggplot2::aes(x = density,
+                 y = speed_av) +
+    ggplot2::geom_point() 
   # print(plots_den)
 }
 gridExtra::grid.arrange(plots_ds[[1]], plots_ds[[2]],plots_ds[[3]],plots_ds[[4]], layout_matrix = rbind(c(1,2),c(3,4)))
