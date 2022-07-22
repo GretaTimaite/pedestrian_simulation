@@ -109,25 +109,18 @@ for (i in 1:length(deldir_tiles)){
 #     break
 #   }
 # }
+
 list = list()
 for (i in 1:length(deldir_tiles)){
-  # if(is.null(deldir_tiles[[i]]) == FALSE ){
-  list[[i]][[k]] = for (k in 1:length(deldir_tiles[[i]])){}
-        
-        deldir_tiles[[i]][[k]]
+  if(is.null(deldir_tiles[[i]]) == FALSE){
+  list[[i]] = deldir_tiles[[i]] |> tiles_pol()
   }
-    # else{
-    #   next
-    # }
-  }
-  }
-
-deldir_frames_test =  list()
-for(i in 1:length(deldir_frames)){
-  deldir_frames_test[[i]] = get(deldir_frames[[i]]) 
 }
 
-
+gcs_env_p() 
+deldir_tiles[[130]] |> plot(add = T)
+list[[130]][[1]] |> plot(add = T, col = "red")
+length(list[[1000]])
 
 
 # ====== 
