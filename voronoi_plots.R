@@ -118,5 +118,11 @@ gcs_env_p()
 deldir_pol[[1200]] |> plot(add = T)
 deldir_pol[[1200]][1] |> plot(add = T, col = "red")
 
+deldir_pol[[44]][1]
+deldir_pol[44][1]
+
+# save dledir_pol 
+saveRDS("deldir_pol",
+        "deldir_pol.RDS")
 
 
