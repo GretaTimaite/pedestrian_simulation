@@ -438,7 +438,7 @@ polygon_walls = sf::st_polygon(matrixlist_walls)
 
 # divide gcs polygon by creating a grid
 gcs_div = sf::st_make_grid(polygon_walls, 
-                           n = 4,
+                           n = 2,
                            what = "polygons")
 ```
 
@@ -448,7 +448,7 @@ polygon_walls |> plot(reset = T)
 gcs_div |> plot(add =T)
 gcs_div[[1]] |> plot(add =T, col = "red")
 gcs_div[[2]] |> plot(add =T, col = "blue")
-gcs_div[[5]] |> plot(add =T, col = "green")
+gcs_div[[4]] |> plot(add =T, col = "green")
 ```
 
 They look good to me. Now let's convert it into an sf object.
@@ -583,10 +583,10 @@ gcs_area = gcs_area |>
   as.vector()
 
 # add area as a new column
-# frames_a = list()
-# for (i in 1:length(gcs_frames_joined_grouped)){
-#   frames_a[[i]] = gcs_frames_joined_grouped[[i]] |> dplyr::mutate(area = gcs_area[i])
-# }
+frames_a = list()
+for (i in 1:length(gcs_frames_joined_grouped)){
+  frames_a[[i]] = gcs_frames_joined_grouped[[i]] |> dplyr::mutate(area = gcs_area[i])
+}
 ```
 
 ```{r}
@@ -620,6 +620,3 @@ gridExtra::grid.arrange(plots_den[[13]],plots_den[[14]],plots_den[[15]], plots_d
 Speed != Velocity
 
 
-# Further tasks:
-
-- [ ]  create environment as an sf object
