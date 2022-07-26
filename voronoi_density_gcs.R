@@ -67,6 +67,7 @@ gcs_area = gcs_area |>
   unlist() |>
   as.vector()
 
+# plot 1
 voronoi_density1_temp = vector()
 voronoi_density1 = data.frame()
 for (i in 1:length(gcs_deldir1)){
@@ -82,6 +83,65 @@ for (i in 1:length(gcs_deldir1)){
 ggplot2::ggplot(voronoi_density1)+
   ggplot2::aes(x = sec,
                y = density)+
-  ggplot2::geom_line()
+  ggplot2::geom_line() +
+  ggplot2::geom_line(data = frames_d[[1]], color = "red")
+
+# plot 2
+voronoi_density2_temp = vector()
+voronoi_density2 = data.frame()
+for (i in 1:length(gcs_deldir2)){
+  if(is.null(gcs_deldir2[[i]]) == FALSE){
+    voronoi_density2_temp[i] = nrow(gcs_deldir1[[i]]) / gcs_area[2]
+    voronoi_density2 = as.data.frame("x" = voronoi_density2_temp) |> 
+      dplyr::mutate(frame = dplyr::row_number(),
+                    sec = frame / 25)
+    colnames(voronoi_density2) = c("density", "frame", "sec")
+  }
+}
+
+ggplot2::ggplot(voronoi_density2)+
+  ggplot2::aes(x = sec,
+               y = density)+
+  ggplot2::geom_line() +
+  ggplot2::geom_line(data = frames_d[[2]], color = "red")
 
 
+# plot 3
+
+voronoi_density3_temp = vector()
+voronoi_density3 = data.frame()
+for (i in 1:length(gcs_deldir3)){
+  if(is.null(gcs_deldir3[[i]]) == FALSE){
+    voronoi_density3_temp[i] = nrow(gcs_deldir3[[i]]) / gcs_area[3]
+    voronoi_density3 = as.data.frame("x" = voronoi_density3_temp) |> 
+      dplyr::mutate(frame = dplyr::row_number(),
+                    sec = frame / 25)
+    colnames(voronoi_density3) = c("density", "frame", "sec")
+  }
+}
+
+ggplot2::ggplot(voronoi_density3)+
+  ggplot2::aes(x = sec,
+               y = density)+
+  ggplot2::geom_line() +
+  ggplot2::geom_line(data = frames_d[[3]], color = "red")
+
+# lot 4
+
+voronoi_density4_temp = vector()
+voronoi_density4 = data.frame()
+for (i in 1:length(gcs_deldir4)){
+  if(is.null(gcs_deldir4[[i]]) == FALSE){
+    voronoi_density4_temp[i] = nrow(gcs_deldir4[[i]]) / gcs_area[4]
+    voronoi_density4 = as.data.frame("x" = voronoi_density4_temp) |> 
+      dplyr::mutate(frame = dplyr::row_number(),
+                    sec = frame / 25)
+    colnames(voronoi_density4) = c("density", "frame", "sec")
+  }
+}
+
+ggplot2::ggplot(voronoi_density4)+
+  ggplot2::aes(x = sec,
+               y = density)+
+  ggplot2::geom_line() +
+  ggplot2::geom_line(data = frames_d[[4]], color = "red")
