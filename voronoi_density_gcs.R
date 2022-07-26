@@ -52,3 +52,36 @@ gcs_deldir4 = list()
     }
   }
 
+# Now let's figure out how many tiles are in each polygon
+# number of tiles (rows) in each dataframe in gcs_deldir indicates the number of agents
+# this number will be divided by the estimates area of a polygon
+
+# find out the area size of each polygon
+gcs_area = list()
+for (i in 1:lengths(gcs_div_sf)){
+  gcs_area[[i]] = sf::st_area(gcs_div_sf[[i]] / 14) # convert to metres
+  # print(gcs_area)
+}
+# make it a vector
+gcs_area = gcs_area |>
+  unlist() |>
+  as.vector()
+
+voronoi_density1_temp = vector()
+voronoi_density1 = data.frame()
+for (i in 1:length(gcs_deldir1)){
+  if(is.null(gcs_deldir1[[i]]) == FALSE){
+    voronoi_density1_temp[i] = nrow(gcs_deldir1[[i]]) / gcs_area[1]
+    voronoi_density1 = as.data.frame("x" = voronoi_density1_temp) |> 
+      dplyr::mutate(frame = dplyr::row_number(),
+                    sec = frame / 25)
+    colnames(voronoi_density1) = c("density", "frame", "sec")
+  }
+  }
+
+ggplot2::ggplot(voronoi_density1)+
+  ggplot2::aes(x = sec,
+               y = density)+
+  ggplot2::geom_line()
+
+
