@@ -1,6 +1,8 @@
 ---
 title: "gcs"
 format: html
+editor_options: 
+  # chunk_output_type: inline
 ---
 
 A link to this file in RPubs: https://rpubs.com/greta/921646
@@ -15,6 +17,8 @@ frames_df = read.csv("https://github.com/GretaTimaite/pedestrian_simulation/rele
 ```{r}
 # geojson (an sf object)
 frames_sf = sf::st_read("https://github.com/GretaTimaite/pedestrian_simulation/releases/download/data/gcs_frames.geojson")
+
+frames_sf = sf::st_read(gcs_frames.geojson)
 ```
 
 To find out the entire process of achieving the above results, check out the code below.
@@ -152,100 +156,100 @@ In this section Grand Central Station's environment is drawn.
 ```{r}
 # concourse parameters: width(x) = 53, height(y) = 50;
 gcs_env_m = function(){
-  plot(-10:60, -10:60, col = "white", xlab = "X", ylab = "Y") # draw an empty plot
-  polygon(x = c(0, 0, 53, 53),
-          y = c(0, 50, 50,0),
-          border = "black",
+  plot((-250 /14):(900/14), (-250/14):(900/14), col = "white", xlab = "X", ylab = "Y") # draw an empty plot
+  polygon(x = c(0, 0, 740/14, 740/14),
+          y = c(0, 700/14, 700/14, 0),
+          border = "blue",
           lwd = 2) # draw walls of a GCS
-  polygon(x= c(0, -3, -3, 0),
-          y = c(7, 7, 25, 25),
-          border = "red",
-          lwd = 2) # exit 10
-  polygon(x = c(0, 0, 11, 11),
-          y = c(50, 53, 53, 50),
-          border = "red",
-          lwd = 2) # exit 9
-  polygon(x = c(11, 11, 33, 33),
-          y = c(50, 53, 53, 50),
-          border = "red",
-          lwd = 2) # exit 8
-  polygon(x = c(33, 33, 48.5, 48.5),
-          y = c(50, 53, 53, 50),
-          border = "red",
-          lwd = 2) # exit 7
-  polygon(x = c(53, 56, 56, 53),
-          y = c(50, 50, 46.5, 46.5),
-          border = "red",
-          lwd = 2) # exit 6
-  polygon(x = c(53, 56, 56, 53),
-          y = c(40, 40, 29, 29),
-          border = "red",
-          lwd = 2) # exit 5
-  polygon(x = c(53, 56, 56, 53),
-          y = c(22, 22, 10, 10),
-          border = "red",
-          lwd = 2) # exit 4
-  polygon(x = c(53, 56, 56, 53),
-          y = c(4.5, 4.5, 0, 0),
-          border = "red",
-          lwd = 2) # exit 3
-  polygon(x = c(53, 53, 33, 33),
-          y = c(0, -3, -3, 0),
-          border = "red",
-          lwd = 2) # exit 2
-  polygon(x = c(33, 33, 11, 11),
-          y = c(0, -3, -3, 0),
+  polygon(x= c(-150/14, 0, 0, -150/14),
+          y = c(400/14, 400/14, 150/14, 150/14),
+          border = "blue",
+          lwd = 2) # exit 0
+  polygon(x = c(0, 250/14, 250/14, 0),
+          y = c(850/14, 850/14, 700/14, 700/14),
           border = "red",
           lwd = 2) # exit 1
-  polygon(x = c(11, 11, 0, 0),
-          y = c(0, -3, -3, 0),
+  polygon(x = c(455/14, 700/14, 700/14, 455/14),
+          y = c(850/14, 850/14, 700/14, 700/14),
           border = "red",
-          lwd = 2) # exit 0
-  # polygon(x = c(21, 18, 15, 15, 18, 21, 24, 24, 21),
-  #         y = c(21, 21, 24, 27, 30, 30, 27, 24, 21),
+          lwd = 2) # exit 2
+  polygon(x = c(740/14, 860/14, 860/14, 740/14),
+          y = c(700/14, 700/14, 610/14, 610/14),
+          border = "red",
+          lwd = 2) # exit 3
+  polygon(x = c(740/14, 860/14, 860/14, 740/14),
+          y = c(550/14, 550/14, 400/14, 400/14),
+          border = "red",
+          lwd = 2) # exit 4
+  polygon(x = c(740/14, 860/14, 860/14, 740/14),
+          y = c(340/14, 340/14, 190/14, 190/14),
+          border = "red",
+          lwd = 2) # exit 5
+  polygon(x = c(740/14, 860/14, 860/14, 740/14),
+          y = c(130/14, 130/14, 0, 0),
+          border = "red",
+          lwd = 2) # exit 6
+  polygon(x = c(555/14, 740/14, 740/14, 555/14),
+          y = c(0, 0, -70/14, -70/14),
+          border = "red",
+          lwd = 2) # exit 7
+  polygon(x = c(370/14, 555/14, 556/14, 370/14),
+          y = c(0, 0, -70/14, -70/14),
+          border = "red",
+          lwd = 2) # exit 8
+  polygon(x = c(185/14, 370/14, 370/14, 185/14),
+          y = c(0, 0, -70/14, -70/14),
+          border = "red",
+          lwd = 2) # exit 9
+  polygon(x = c(0, 185/14, 185/14, 0),
+          y = c(0, 0, -70/14, -70/14),
+          border = "red",
+          lwd = 2) # exit 10
+  # polygon(x = c(294, 252, 210, 210, 252, 294, 336, 336, 294),
+  #         y = c(294, 294, 336, 378, 420, 420, 378, 336, 294),
   #         col = "red") # information booth (an obstacle)
-    plotrix::draw.circle(x = 24.6, y = 20, 
-                       radius = 4, 
+  plotrix::draw.circle(x = 371/14, y = 280/14, 
+                       radius = 56/14, 
                        col = "red") # obstacle 
   # annotation of a plot
-  text(x = -4,
-       y = 15,
-       label = "Exit 10",
+  text(x = -84/14,
+       y = 252/14,
+       label = "Exit 0",
        srt = 90)
-  text(x = 7,
-       y = 55,
-       label = "Exit 9")
-  text(x = 20,
-       y = 55,
-       label = "Exit 8")
-  text(x = 40,
-       y = 55,
-       label = "Exit 7")
-  text(x = 57,
-       y = 48,
-       label = "Exit 6",
-       srt = -90)
-  text(x = 57,
-       y = 34,
-       label = "Exit 5",
-       srt = -90)
-  text(x = 57,
-       y = 15,
-       label = "Exit 4",
-       srt = -90)
-  text(x = 57,
-       y = 2,
+  text(x = 112/14,
+       y = 770/14,
+       label = "Exit 1")
+  text(x = 560/14,
+       y = 770/14,
+       label = "Exit 2")
+  text(x = 784/14,
+       y = 630/14,
        label = "Exit 3",
        srt = -90)
-  text(x = 45,
-       y = -5,
-       label = "Exit 2")
-  text(x = 22,
-       y = -5,
-       label = "Exit 1")
-  text(x = 6,
-       y = -5,
-       label = "Exit 0")
+  text(x = 784/14,
+       y = 455/14,
+       label = "Exit 4",
+       srt = -90)
+  text(x = 784/14,
+       y = 252/14,
+       label = "Exit 5",
+       srt = -90)
+  text(x = 784/14, 
+       y = 42/14,
+       label = "Exit 6",
+       srt = -90)
+  text(x = 630/14,
+       y = -49/14,
+       label = "Exit 7")
+  text(x = 448/14,
+       y = -49/14,
+       label = "Exit 8")
+  text(x = 266/14, 
+       y = -49/14,
+       label = "Exit 9")
+  text(x = 63/14,
+       y = -49/14,
+       label = "Exit 10")
 }
 gcs_env_m()
 frames_sf |> dplyr::mutate(geometry = geometry/14) |> sf::st_geometry() |> plot(add = T)
@@ -259,103 +263,105 @@ https://github.com/Urban-Analytics/dust/blob/main/Projects/ABM_DA/experiments/gr
 
 ```{r}
 gcs_env_p = function(){
-  plot(-100:800, -100:800, col = "white", xlab = "X", ylab = "Y") # draw an empty plot
-  polygon(x = c(0, 0, 742, 742),
+  plot(-250:900, -250:900, col = "white", xlab = "X", ylab = "Y") # draw an empty plot
+  polygon(x = c(0, 0, 740, 740),
           y = c(0, 700, 700, 0),
-          border = "black",
+          border = "blue",
           lwd = 2) # draw walls of a GCS
-  polygon(x= c(0, -42, -42, 0),
-          y = c(98, 98, 350, 350),
-          border = "red",
-          lwd = 2) # exit 10
-  polygon(x = c(0, 0, 154, 154),
-          y = c(700, 742, 742, 700),
-          border = "red",
-          lwd = 2) # exit 9
-  polygon(x = c(154, 154, 462, 462),
-          y = c(700, 742, 742, 700),
-          border = "red",
-          lwd = 2) # exit 8
-  polygon(x = c(462, 462, 679, 679),
-          y = c(700, 742, 742, 700),
-          border = "red",
-          lwd = 2) # exit 7
-  polygon(x = c(742, 784, 784, 742),
-          y = c(700, 700, 651, 651),
-          border = "red",
-          lwd = 2) # exit 6
-  polygon(x = c(742, 784, 784, 742),
-          y = c(560, 560, 406, 406),
-          border = "red",
-          lwd = 2) # exit 5
-  polygon(x = c(742, 784, 784, 742),
-          y = c(308, 308, 140, 140),
-          border = "red",
-          lwd = 2) # exit 4
-  polygon(x = c(742, 784, 784, 742),
-          y = c(63, 63, 0, 0),
-          border = "red",
-          lwd = 2) # exit 3
-  polygon(x = c(742, 742, 462, 462),
-          y = c(0, -42, -42, 0),
-          border = "red",
-          lwd = 2) # exit 2
-  polygon(x = c(462, 462, 154, 154),
-          y = c(0, -42, -42, 0),
+  polygon(x= c(-150, 0, 0, -150),
+          y = c(400, 400, 150, 150),
+          border = "blue",
+          lwd = 2) # exit 0
+  polygon(x = c(0, 250, 250, 0),
+          y = c(850, 850, 700, 700),
           border = "red",
           lwd = 2) # exit 1
-  polygon(x = c(154, 154, 0, 0),
-          y = c(0, -42, -42, 0),
+  polygon(x = c(455, 700, 700, 455),
+          y = c(850, 850, 700, 700),
           border = "red",
-          lwd = 2) # exit 0
+          lwd = 2) # exit 2
+  polygon(x = c(740, 860, 860, 740),
+          y = c(700, 700, 610, 610),
+          border = "red",
+          lwd = 2) # exit 3
+  polygon(x = c(740, 860, 860, 740),
+          y = c(550, 550, 400, 400),
+          border = "red",
+          lwd = 2) # exit 4
+  polygon(x = c(740, 860, 860, 740),
+          y = c(340, 340, 190, 190),
+          border = "red",
+          lwd = 2) # exit 5
+  polygon(x = c(740, 860, 860, 740),
+          y = c(130, 130, 0, 0),
+          border = "red",
+          lwd = 2) # exit 6
+  polygon(x = c(555, 740, 740, 555),
+          y = c(0, 0, -70, -70),
+          border = "red",
+          lwd = 2) # exit 7
+  polygon(x = c(370, 555, 556, 370),
+          y = c(0, 0, -70, -70),
+          border = "red",
+          lwd = 2) # exit 8
+  polygon(x = c(185, 370, 370, 185),
+          y = c(0, 0, -70, -70),
+          border = "red",
+          lwd = 2) # exit 9
+  polygon(x = c(0, 185, 185, 0),
+          y = c(0, 0, -70, -70),
+          border = "red",
+          lwd = 2) # exit 10
   # polygon(x = c(294, 252, 210, 210, 252, 294, 336, 336, 294),
   #         y = c(294, 294, 336, 378, 420, 420, 378, 336, 294),
   #         col = "red") # information booth (an obstacle)
-  plotrix::draw.circle(x = 345.0, y = 280, 
+  plotrix::draw.circle(x = 371.0, y = 280, 
                        radius = 56, 
                        col = "red") # obstacle 
   # annotation of a plot
-  text(x = -56,
-       y = 210,
-       label = "Exit 10",
+  text(x = -84,
+       y = 252,
+       label = "Exit 0",
        srt = 90)
-  text(x = 98,
+  text(x = 112,
        y = 770,
-       label = "Exit 9")
-  text(x = 280,
-       y = 770,
-       label = "Exit 8")
+       label = "Exit 1")
   text(x = 560,
        y = 770,
-       label = "Exit 7")
-  text(x = 798,
-       y = 672,
-       label = "Exit 6",
-       srt = -90)
-  text(x = 798,
-       y = 476,
-       label = "Exit 5",
-       srt = -90)
-  text(x = 798,
-       y = 210,
-       label = "Exit 4",
-       srt = -90)
-  text(x = 798,
-       y = 28,
+       label = "Exit 2")
+  text(x = 784,
+       y = 630,
        label = "Exit 3",
        srt = -90)
+  text(x = 784,
+       y = 455,
+       label = "Exit 4",
+       srt = -90)
+  text(x = 784,
+       y = 252,
+       label = "Exit 5",
+       srt = -90)
+  text(x = 784, 
+       y = 42,
+       label = "Exit 6",
+       srt = -90)
   text(x = 630,
-       y = -70,
-       label = "Exit 2")
-  text(x = 308,
-       y = -70,
-       label = "Exit 1")
-  text(x = 84,
-       y = -70,
-       label = "Exit 0")
+       y = -49,
+       label = "Exit 7")
+  text(x = 448,
+       y = -49,
+       label = "Exit 8")
+  text(x = 266, 
+       y = -49,
+       label = "Exit 9")
+  text(x = 63,
+       y = -49,
+       label = "Exit 10")
 }
 gcs_env_p()
 frames_sf |> sf::st_geometry() |> plot(add = T)
+
+
 ```
 
 ```{r}
@@ -466,12 +472,12 @@ Let's iterate through all 16 polygons to find out which rows (agents) are within
 # first create a list to store our multiple dataframes
 gcs_frames_joined = list()
 for (i in 1:lengths(gcs_div_sf)){
-  gcs_frames_joined[[i]] = frames_sf_m[gcs_div_sf[i,], op = sf::st_within] # here I use `within` but it could be changes to `intersects`...
+  gcs_frames_joined[[i]] = frames_sf_m[gcs_div_sf[i,], op = sf::st_intersects] # here I use `within` but it could be changes to `intersects`...
 }
 
 # sanity check
-gcs_frames_joined1 = frames_sf_m[gcs_div_sf[1,], op = sf::st_within]
-gcs_frames_joined2 = frames_sf_m[gcs_div_sf[2,], op = sf::st_within]
+gcs_frames_joined1 = frames_sf_m[gcs_div_sf[1,], op = sf::st_intersects]
+gcs_frames_joined2 = frames_sf_m[gcs_div_sf[2,], op = sf::st_intersects]
 identical(gcs_frames_joined1, gcs_frames_joined[[1]]) # TRUE
 identical(gcs_frames_joined2, gcs_frames_joined[[2]]) # TRUE
 ```
