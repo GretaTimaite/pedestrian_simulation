@@ -239,6 +239,10 @@ zone2 = sf::st_polygon(zone2_matrix_list)
 gcs_env_m()
 zone1 |> plot(add = T, border = "green", lwd = 2)
 zone2 |> plot(add = T, border = "green", lwd = 2)
+
+# join both zones
+zones = list(zone1, zone2)
+
 ```
 
 # Flow
@@ -331,24 +335,79 @@ identical(gcs_joined_grouped[[1]], # first list of a list that was just made
             dplyr::summarise(n = dplyr::n()))
 ```
 
+### Plotting
 In the plot showing flow in the entire GCS environment, I added means and medians but this time I will exclude them as I do not know if it's valuable to have them at this stage. Plus, it will make the code shorter.
 
 ```{r}
 # let's create a list of plots showing flow in each polygon
-plots = list()
+gcs_flow_div_plots = list()
 for (i in 1:length(gcs_joined_grouped)){
-  plots[[i]] = ggplot2::ggplot(gcs_joined_grouped[[i]]) +
+  gcs_flow_div_plots[[i]] = ggplot2::ggplot(gcs_joined_grouped[[i]]) +
     ggplot2::aes(x = sec,
                  y = n) +
     ggplot2::geom_line() 
-  # print(plots)
+  # print(gcs_flow_div_plots)
 }
 ```
 
 ```{r}
-# let's plot a polygons 1-4 and 12-15
-gridExtra::grid.arrange(plots[[1]], plots[[2]],plots[[3]],plots[[4]], layout_matrix = rbind(c(1,2),c(3,4)))
+# let's plot a polygons 1-4 
+gridExtra::grid.arrange(gcs_flow_div_plots[[1]], gcs_flow_div_plots[[2]],gcs_flow_div_plots[[3]],gcs_flow_div_plots[[4]], layout_matrix = rbind(c(1,2),c(3,4)))
 ```
+
+
+## 3. Selected
+
+```{r}
+# a list to store our 2 dataframes for the selected areas
+gcs_joined_zones = list()
+for (i in 1:length(zones)){
+  gcs_joined_zones[[i]] = gcs_sf_s[zones[[i]], op = sf::st_intersects] # all intersecting points will be selected
+}
+
+# sanity check
+gcs_joined_zones1 = gcs_sf_s[zones[[1]], op = sf::st_intersects]
+identical(gcs_joined_zones1, gcs_joined_zones[[1]]) # TRUE
+```
+
+```{r}
+# group each sf object by seconds and make a list out of them
+gcs_joined_grouped_zones = list()
+for (i in 1:length(gcs_joined_zones)){
+  gcs_joined_grouped_zones[[i]] = gcs_joined_zones[[i]] |> 
+    sf::st_drop_geometry() |> 
+    dplyr::group_by(sec) |> 
+    dplyr::summarise(n = dplyr::n())
+}
+
+# sanity check comparison (alert: ugly code!)
+identical(gcs_joined_grouped_zones[[1]], # first list of a list that was just made
+          gcs_joined_zones[[1]] |> # repeating the same code as in the loop above but only on 1 (the first) list 
+            sf::st_drop_geometry() |> 
+            dplyr::group_by(sec) |> 
+            dplyr::summarise(n = dplyr::n()))
+```
+
+
+### Plotting
+
+```{r}
+# let's create a list of plots showing flow in each polygon
+gcs_flow_zones_plots = list()
+for (i in 1:length(gcs_joined_grouped_zones)){
+  gcs_flow_zones_plots[[i]] = ggplot2::ggplot(gcs_joined_grouped_zones[[i]]) +
+    ggplot2::aes(x = sec,
+                 y = n) +
+    ggplot2::geom_line() 
+  # print(gcs_flow_zones_plots )
+}
+
+gridExtra::grid.arrange(gcs_flow_zones_plots[[1]], gcs_flow_zones_plots[[2]], layout_matrix = rbind(c(1,2),c(3,4)))
+```
+
+
+
+
 
 
 
