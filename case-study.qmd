@@ -16,17 +16,24 @@ Agent-based models (AMB) have become oen of the main computational modelling too
 
 <!-- Outline the; who, what, when, where and how of the study -->
 
-The project is based on two sets of data -- real and simulated. Real data of pedestrian trajectories was inferred from the video sequence at the New York Grand Central Station (GCS), which was originally used in Zhou et al.'s (2012) paper to study pedestrian dynamics. A fraction of this data was further cleaned by Patricia Ternes for Clay et al.'s (2021) paper.^[Jupyter Notebooks can be found on the GitHub repository: https://github.com/Urban-Analytics/dust/tree/main/Projects/ABM_DA/experiments/grand_central_terminal_data]. 
+The project is based on two sets of data -- real and simulated. Real data of pedestrian trajectories was inferred from the video sequence at [the New York Grand Central Station (GCS)](https://www.ee.cuhk.edu.hk/~xgwang/grandcentral.html), which was originally used in Zhou et al.'s (2012) paper to study pedestrian dynamics. A fraction of this data was further cleaned by Patricia Ternes for Clay et al.'s (2021) paper.^[Jupyter Notebooks can be found on the GitHub repository: https://github.com/Urban-Analytics/dust/tree/main/Projects/ABM_DA/experiments/grand_central_terminal_data]. 
 
-Simulated data was created usng JuPedSim (JPS), an open-source pedestrian simulation framework. Exact model parameters, including files used to run the simulation can be found on GitHub. 
+Simulated data was created usng [JuPedSim (JPS)](https://www.jupedsim.org/jupedsim_introduction.html), an open-source pedestrian simulation framework. Exact model parameters, including files used to run the simulation, can be found on GitHub. 
 
 To evaluate the accuracy of the JPS model, three key methods for measuring pedestrian dynamics were explored (steffen and Seyfried 2010): 
 
 1. flow
 2. density, including Voronoi diagram
-3. speed. 
+3. speed
 
-Additionally, fundamental diagrams, in this case a linear relationship between speed and density, was used to improve the understanding of pedestrian dynamics in both environments.
+Additionally, fundamental diagrams (in this case a linear relationship between speed and density), was used to improve the understanding of pedestrian dynamics in both environments.
+
+The environment in which simulation was run has been designed to represent the GCS. This work has already been done by Ternes et al. (2022). However, to evaluate model's accuracy, two additional steps were taken:
+
+1. environment has been divided into 4 equal polygons to better understand pedestrian movement in different regions of a train concourse;
+2. two smaller areas (Zone 1 and Zone 2) were selected in which Zone 1 has the same density as the whole environment and Zone 2 has the highest density in the GCS;
+
+For more information on the environment and measure areas, please refer to the ["Environment" chapter](https://gretatimaite.github.io/gcs_jps/envir.html#global) in the online book developed for this project.
 
 ## Key findings
 
