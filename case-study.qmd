@@ -39,6 +39,9 @@ For more information on the environment and measure areas, please refer to the [
 
 <!-- Outline the results of the research project. Aim to stick to 2-3 paragraphs. Use imagery (clearly labelled and with descriptors – see images guidance at end of template) where appropriate. -->
 
+The most interesting, and the one that begs further questions, is the application of Voronoi diagram to compare GCS and JPS data. Voronoi diagram is a method to partition 2D space into regions, or cells, in which each cell "contains all the points closer to the related particle than to others.” (Xiao et al., 2016:568) Moreover, cells change every time an agent (here, a pedestrian) moves. As a result, each frame has, theoretically, a differently divided 2D space. 
+
+
 ## Value of the research
 
 <!-- What is the impact, how will this benefit xyz? How could the research be applied to real-world problems or what is the usage/benefit? -->
