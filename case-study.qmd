@@ -1,0 +1,103 @@
+---
+title: " Exploring the efficacy of different methods for comparing pedestrian simulations against empirical data"
+format: html
+---
+
+<!-- Introductory sentence: try to get to the bottom of your research in one sentence, this is your elevator pitch and should hook the audience in. What’s the human interest angle? -->
+
+## Project overview
+
+<!-- Sticking to one paragraph (3-4 sentences) give the background of the project including project aims. Is there anything new or unique about this research?  -->
+
+Agent-based models (AMB) have become oen of the main computational modelling tools to support the understanding of human dynamics within cities (crooks_etal2021). ABMs have been applied in a veriety of contexts ranging from disease to pedestrian simulation (torrens_2010) as they can be used to assess, for example, the utility of new traffic intervention measures before the implementation (crooks_etal2021). Nevertheless, one of the key challenges remains the evaluation of the model accuracy which is influenced by various uncertainties, such as missing data or inherent randomness (kieu_etal_2020). Thus, the **main aim of the project** is to address the issue of uncertainty^[Extended project summary can be found here: https://lida.leeds.ac.uk/exploring-the-efficacy-of-different-methods-for-comparing-pedestrian-simulations-against-empirical-data/]. This will be done by investigating and evaluating the impact of different methods on the reliability of ABM.
+
+
+## Data and methods
+
+<!-- Outline the; who, what, when, where and how of the study -->
+
+The project is based on two sets of data -- real and simulated. Real data of pedestrian trajectories was inferred from the video sequence at the New York Grand Central Station (GCS), which was originally used in Zhou et al.'s (2012) paper to study pedestrian dynamics. A fraction of this data was further cleaned by Patricia Ternes for Clay et al.'s (2021) paper.^[Jupyter Notebooks can be found on the GitHub repository: https://github.com/Urban-Analytics/dust/tree/main/Projects/ABM_DA/experiments/grand_central_terminal_data]. 
+
+Simulated data was created usng JuPedSim (JPS), an open-source pedestrian simulation framework. Exact model parameters, including files used to run the simulation can be found on GitHub. 
+
+To evaluate the accuracy of the JPS model, three key methods for measuring pedestrian dynamics were explored (steffen and Seyfried 2010): 
+
+1. flow
+2. density, including Voronoi diagram
+3. speed. 
+
+Additionally, fundamental diagrams, in this case a linear relationship between speed and density, was used to improve the understanding of pedestrian dynamics in both environments.
+
+## Key findings
+
+<!-- Outline the results of the research project. Aim to stick to 2-3 paragraphs. Use imagery (clearly labelled and with descriptors – see images guidance at end of template) where appropriate. -->
+
+## Value of the research
+
+<!-- What is the impact, how will this benefit xyz? How could the research be applied to real-world problems or what is the usage/benefit? -->
+
+## Quote from project partner
+
+<!-- “One sentence or two approved by an industry partner or collaborator.” Include name, job title and organisation. -->
+
+<!-- Wherever possible, you should try to obtain a partner quote as this will maximise the impact of your project. -->
+
+## Insights
+
+<!-- · If you can try to pull out a few key points -->
+
+<!-- · That can be used as bullet points -->
+
+<!-- · These can serve as fast facts about the study. -->
+
+## Research theme
+
+<!-- Identify which LIDA research theme(s) this sits under:  -->
+
+<!-- - Health -->
+
+- Societies
+
+<!-- - Environment -->
+
+## Programme theme (select all that apply)
+
+<!-- - Statistical Data Science -->
+
+<!-- - Artificial Intelligence -->
+
+<!-- - Visualisation Extended Reality -->
+
+- Mathematical and Computational Foundations
+
+<!-- - Data Science Infrastructures -->
+
+## People
+
+<!-- Who was involved, their job title and institution. -->
+
+Greta Timaite, Data Scientist, Leeds Institute for Data Analytics, University of Leeds
+
+Dr Josie McCulloch, Research Fellow, School of Geography, University of Leeds
+
+ Professor Nick Malleson, School of Geography, University of Leeds  <!--what is his exact position? -->
+
+Professor Alison Heppenstall, Professor in Geocomputation, School of Geography, University of Leeds <!--what about Glasgow position? -->
+
+Dr Jon Ward, Lecturer, School of Mathematics, University of Leeds
+
+Dr Jiaqi Ge, University Academic Fellow, School of Geography, University of Leeds
+
+## Partners
+
+<!-- All partners involved (except where an NDA applies) -->
+
+<!-- N.B. Partner stakeholders should be sent a copy of the case study before it is shared on LIDA comms and be asked to approve it. An email confirming their approval should be sent to the LIDA Comms Manager and Programme Co-Ordinator. -->
+
+## Funders
+
+<!-- Funded by… (e.g. CDRC, The Alan Turing Institute – check with supervisor if unsure) -->
+
+
+
+
