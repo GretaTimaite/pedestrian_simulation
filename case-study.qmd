@@ -11,29 +11,29 @@ Agent-based models have the power to improve our understanding of human movement
 
 <!-- Sticking to one paragraph (3-4 sentences) give the background of the project including project aims. Is there anything new or unique about this research?  -->
 
-Agent-based models (AMB) have become one of the main computational modelling tools to support the understanding of human movement within cities (crooks_etal2021). ABMs have been applied in a variety of contexts ranging from disease to pedestrian simulation (torrens_2010) as they can be used to assess, for example, the utility of new traffic intervention measures before their implementation (crooks_etal2021). Nevertheless, one of the key challenges remains the evaluation of the model's accuracy which is influenced by various uncertainties, such as missing data or inherent randomness (kieu_etal_2020). Thus, the **main aim of the project** is to address the issue of uncertainty^[Extended project summary can be found here: https://lida.leeds.ac.uk/exploring-the-efficacy-of-different-methods-for-comparing-pedestrian-simulations-against-empirical-data/]. This will be done by investigating and evaluating the impact of different methods on the reliability of ABM.
+Agent-based models (AMB) have become one of the main computational modelling tools to improve the understanding of human movement within cities (crooks_etal2021). ABMs have been applied in a variety of contexts ranging from disease to pedestrian simulation (torrens_2010) as they can be used to assess, for example, the utility of new traffic intervention measures before their implementation (crooks_etal2021). Nevertheless, one of the key challenges remains the evaluation of the model's accuracy which is influenced by various uncertainties, such as missing data or inherent randomness (kieu_etal_2020). Thus, the **main aim of the project** is to address the issue of uncertainty^[Extended project summary can be found here: https://lida.leeds.ac.uk/exploring-the-efficacy-of-different-methods-for-comparing-pedestrian-simulations-against-empirical-data/]. This will be done by investigating and evaluating the impact of different methods on the reliability of ABM.
 
 
 ## Data and methods
 
 <!-- Outline the; who, what, when, where and how of the study -->
 
-The project relies on two sets of data -- real and simulated. Real data of pedestrian trajectories was inferred from the video sequence at [the New York Grand Central Station (GCS)](https://www.ee.cuhk.edu.hk/~xgwang/grandcentral.html), which was originally used in Zhou et al.'s (2012) paper to study pedestrian dynamics. A fraction of this data was further cleaned by Patricia Ternes for Clay et al.'s (2021) paper.^[Jupyter Notebooks can be found on the GitHub repository: https://github.com/Urban-Analytics/dust/tree/main/Projects/ABM_DA/experiments/grand_central_terminal_data]. 
+The project relies on two sets of data -- empirical (real) and simulated. Empirical data of pedestrian trajectories was inferred from the video sequence at [the New York Grand Central Station (GCS)](https://www.ee.cuhk.edu.hk/~xgwang/grandcentral.html), which was originally used in Zhou et al.'s (2012) paper to study pedestrian dynamics. A subset of this data (3 minutes) was further cleaned by Patricia Ternes for Clay et al.'s (2021) paper.^[Jupyter Notebooks can be found on the GitHub repository: https://github.com/Urban-Analytics/dust/tree/main/Projects/ABM_DA/experiments/grand_central_terminal_data]. This subsetted data was used in this project as well.
 
-Simulated data was created using [JuPedSim (JPS)](https://www.jupedsim.org/jupedsim_introduction.html), an open-source pedestrian simulation framework. Exact model parameters, including [files used to run the simulation](https://github.com/GretaTimaite/pedestrian_simulation/releases/tag/data)^[This includes the following files: geo.xml, agents_sources.xml, core_ini.xml], can be found on GitHub. 
+[JuPedSim (JPS)](https://www.jupedsim.org/jupedsim_introduction.html), an open-source pedestrian simulation framework, was used to create a simulation of pedestrian movement at GCS. The data (simulated agent trajectories) then was compared against empirical data. Exact model parameters, including [files used to run the simulation](https://github.com/GretaTimaite/pedestrian_simulation/releases/tag/data)^[This includes the following files: geo.xml, agents_sources.xml, core_ini.xml], can be found on GitHub. 
 
 To evaluate the accuracy of the JPS model, three key methods for measuring pedestrian dynamics were explored (steffen and Seyfried 2010): 
 
-1. flow is a count of heads that pass through a line, such as doors;
-2. density (including Voronoi diagram) counts heads per area;
-3. speed
+1. Flow which is a count of heads that pass through a line, such as doors;
+2. Density (including Voronoi diagram) which is measured by counting heads per area;
+3. Speed refers to a distance traveled from point A to point B over a given time period;
 
 Additionally, fundamental diagrams (in this case a linear relationship between speed and density), was used to improve the understanding of pedestrian dynamics in both environments.
 
-The environment in which simulation was run has been designed to represent the GCS. This work has already been done by Ternes et al. (2022). However, to evaluate model's accuracy, two additional steps were taken:
+The environment for the simulation was designed to represent the GCS. This work had already been done by Ternes et al. (2022). However, to evaluate model's accuracy, two additional steps were taken:
 
-1. environment has been divided into 4 equal polygons to better understand pedestrian movement in different regions of a train concourse;
-2. two smaller areas (Zone 1 and Zone 2) were selected in which Zone 1 has the same density as the whole environment and Zone 2 has the highest density in the GCS;
+1. Environment was divided into 4 equal polygons to better understand pedestrian movement in different regions of a train concourse;
+2. Two smaller areas (Zone 1 and Zone 2) were selected in which Zone 1 has the same density as the whole environment and Zone 2 has the highest density in the GCS;
 
 For more information on the environment and measure areas, please refer to the ["Environment" chapter](https://gretatimaite.github.io/gcs_jps/envir.html#global) in the online book developed for this project.
 
