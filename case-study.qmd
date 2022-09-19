@@ -58,12 +58,13 @@ Potentially, Voronoi density is so much higher for GCS Zone 1 compared to Classi
 
 ![Figure 1. Comparison of classical and Voronoi density measurements for Zone 1](voronoi_z1_comp.png)
 
-
 ## Value of the research
 
 <!-- What is the impact, how will this benefit xyz? How could the research be applied to real-world problems or what is the usage/benefit? -->
 
-The exploration of different methods to evaluate simulated data against real data helps to advance the understanding of pedestrian dynamics and potential pitfalls in modelling the movement. For example, a methodological choice between classical and Voronoi density measurements as well as the size of a measured area might influence the understanding of how much movement happens. Indeed, Voronoi diagram might help to capture the instances where agents move around the measured area but not inside it. This might be important when, for instance, a measured area is close to, but does not intersect with, an information booth or windows of a shop that permits "window shopping". The question is, then, not only whether a measured area should be enlarged to capture the uncertainty around the edges but also if the model can be calibrated to capture some of that uncertainty, such as "window shopping".
+The exploration of different methods to evaluate simulated data against real empirical data helps to advance the understanding of pedestrian dynamics in non-experimental settings and potential pitfalls in modelling their movement there. In this specific case, exploration of various methods, with a focus on Voronoi diagram, to measure pedestrian dynamics helps to detect uncertainties, such as "edge uncertainty", that might otherwise be unnoticed and, thus, a model not calibrated to minimize them.
+
+Moreover, methods explored in this project are general, thus can be applied in other contexts, such as consumer movement in shopping. Also, code and data are open and freely [available on GitHub](https://github.com/GretaTimaite/pedestrian_simulation), including an [online documentation](https://gretatimaite.github.io/gcs_jps/) in a book format, thus allowing other researchers reproduce the results and/or adapt the code for their own projects.
 
 ## Insights
 
