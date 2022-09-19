@@ -59,8 +59,6 @@ Potentially, Voronoi density is so much higher for GCS Zone 1 compared to Classi
 ![Figure 1. Comparison of classical and Voronoi density measurements for Zone 1](voronoi_z1_comp.png)
 
 
-[- discuss uncertainty around edges --> pedestrians crowding around the measure area because of, for instance, window shopping or just not to block the path to those exiting/entering through the gates. Potentially add an image.]
-
 ## Value of the research
 
 <!-- What is the impact, how will this benefit xyz? How could the research be applied to real-world problems or what is the usage/benefit? -->
@@ -69,11 +67,10 @@ The exploration of different methods to evaluate simulated data against real dat
 
 ## Insights
 
-· If you can try to pull out a few key points
-
-· That can be used as bullet points
-
-· These can serve as fast facts about the study.
+- The study designs a pedestrian simulation based on the empirical rather than experimental data
+- Voronoi diagram is a useful method to detect pedestrian activity around the area of measure
+- However, Voronoi diagram needs to be further examined for its potential to inflate density in the (relatively) low density environments, such as train concourse
+- Simulations for pedestrian movement in train concourse need to calibrate for the potential of an environment to impact agents movement, such as stopping for "window shopping"
 
 ## Research theme
 
