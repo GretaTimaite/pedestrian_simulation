@@ -17,10 +17,22 @@ Agent-based models (AMB) have become one of the main computational modelling too
 ## Data and methods
 
 <!-- Outline the; who, what, when, where and how of the study -->
+### Data
 
 The project relies on two sets of data -- empirical (real) and simulated. Empirical data of pedestrian trajectories was inferred from the video sequence at [the New York Grand Central Station (GCS)](https://www.ee.cuhk.edu.hk/~xgwang/grandcentral.html), which was originally used in Zhou et al.'s (2012) paper to study pedestrian dynamics. A subset of this data (3 minutes) was further cleaned by Patricia Ternes for Clay et al.'s (2021) paper.^[Jupyter Notebooks can be found on the GitHub repository: https://github.com/Urban-Analytics/dust/tree/main/Projects/ABM_DA/experiments/grand_central_terminal_data]. This subsetted data was used in this project as well.
 
 [JuPedSim (JPS)](https://www.jupedsim.org/jupedsim_introduction.html), an open-source pedestrian simulation framework, was used to create a simulation of pedestrian movement at GCS. The data (simulated agent trajectories) then was compared against empirical data. Exact model parameters, including [files used to run the simulation](https://github.com/GretaTimaite/pedestrian_simulation/releases/tag/data)^[This includes the following files: geo.xml, agents_sources.xml, core_ini.xml], can be found on GitHub. 
+
+### Environment
+
+The environment for the simulation was designed to represent the GCS. This work had already been done by Ternes et al. (2022). However, to evaluate model's accuracy, two additional steps were taken:
+
+1. Environment was divided into 4 equal polygons to better understand pedestrian movement in different regions of a train concourse;
+2. Two smaller areas (Zone 1 and Zone 2) were selected in which Zone 1 has the same density as the whole environment and Zone 2 has the highest density in the GCS;
+
+For more information on the environment and measure areas, please refer to the ["Environment" chapter](https://gretatimaite.github.io/gcs_jps/envir.html#global) in the online book developed for this project.
+
+### Methods
 
 To evaluate the accuracy of the JPS model, three key methods for measuring pedestrian dynamics were explored (steffen and Seyfried 2010): 
 
@@ -30,20 +42,16 @@ To evaluate the accuracy of the JPS model, three key methods for measuring pedes
 
 Additionally, fundamental diagrams (in this case a linear relationship between speed and density), was used to improve the understanding of pedestrian dynamics in both environments.
 
-The environment for the simulation was designed to represent the GCS. This work had already been done by Ternes et al. (2022). However, to evaluate model's accuracy, two additional steps were taken:
-
-1. Environment was divided into 4 equal polygons to better understand pedestrian movement in different regions of a train concourse;
-2. Two smaller areas (Zone 1 and Zone 2) were selected in which Zone 1 has the same density as the whole environment and Zone 2 has the highest density in the GCS;
-
-For more information on the environment and measure areas, please refer to the ["Environment" chapter](https://gretatimaite.github.io/gcs_jps/envir.html#global) in the online book developed for this project.
-
 ## Key findings
 
 <!-- Outline the results of the research project. Aim to stick to 2-3 paragraphs. Use imagery (clearly labelled and with descriptors – see images guidance at end of template) where appropriate. -->
 
-The most interesting, and the one that begs further questions, is the application of Voronoi diagram to compare GCS and JPS data. Voronoi diagram is a method to partition 2D space into regions, or cells, in which each cell "contains all the points closer to the related particle than to others.” (Xiao et al., 2016:568) Moreover, cells change every time an agent (here, a pedestrian) moves. As a result, each frame has, theoretically, a differently divided 2D space. 
+The most interesting, and the one that raises further questions, is the application of Voronoi diagram for evaluating JPS data against GCS data. Voronoi diagram is a method to partition a 2D space into regions, or cells, in which each cell "contains all the points closer to the related particle than to others.” (Xiao et al., 2016:568) Moreover, cells change every time an agent (here, a pedestrian) moves. As a result, each frame has, given that at least one agent moved, a differently divided 2D space. 
 
-Voronoi diagrams, Steffen and Seyfried (2010) argue, can help to overcome some of the limitations of classical density by including, for instance, fractional counts (e.g., counting in a person whose body (or a cell) intersects with an area of measure but is not fully inside it). Thus, it is not surprising that Voronoi diagram shows higher densities in all measured areas (also see the ["Voronoi" chapter](https://gretatimaite.github.io/gcs_jps/voronoi.html#discussion) in the book). 
+Voronoi diagrams, Steffen and Seyfried (2010) argue, can help to overcome some of the limitations of classical density by including, for instance, fractional counts (i.e. counting in an agent whose body (or a cell) intersects with an area of measure but is not fully within it). Hence, it is considered a more precise method (zhang_etal2011) and is used to pedestrian dynamics at the bottlenecks (liao_etal2014) or T-junctions and straight corridors (zhang_etal2011). 
+
+
+Thus, it is not surprising that Voronoi diagram shows higher densities in all measured areas (also see the ["Voronoi" chapter](https://gretatimaite.github.io/gcs_jps/voronoi.html#discussion) in the book). 
 
 Surprising results emerge, however, when Voronoi diagram is computed for Zone 1. In the rest of the measured areas, Voronoi density tends to drop or increase in accordance with classical density. Yet, in neither JPS model nor, especially, in GCS data the same is observed (see Figure 1). For example, in the GCS case, classical density shows multiple cases when density at a given time frame is 0, yet this disappears when Voronoi diagram is applied. Thus, it demonstrates that there is activity *around* Zone 1 but it is not captured by the classical density measurement. 
 
