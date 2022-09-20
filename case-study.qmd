@@ -1,6 +1,7 @@
 ---
 title: " Exploring the efficacy of different methods for comparing pedestrian simulations against empirical data"
 format: docx
+bibliography: case-study.bib
 ---
 
 <!-- Introductory sentence: try to get to the bottom of your research in one sentence, this is your elevator pitch and should hook the audience in. What’s the human interest angle? -->
