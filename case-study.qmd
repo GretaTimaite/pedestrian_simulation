@@ -35,10 +35,10 @@ For more information on the environment and measure areas, please refer to the [
 
 ### Methods
 
-To evaluate the accuracy of the JPS model, the following methods for measuring pedestrian dynamics were explored (also see Steffen and Seyfried [-@steffenMethodsMeasuringPedestrian2010]: 
+To evaluate the accuracy of the JPS model, the following key methods for measuring pedestrian dynamics were explored (Steffen and Seyfried [-@steffenMethodsMeasuringPedestrian2010]: 
 
 1. Flow which is a count of heads that pass through a line, such as doors;
-2. Density (including Voronoi diagram, a method partitioning region, so that each agent has an associated cell) which is measured by counting heads per area;
+2. Density (including Voronoi diagram, a method to partition space, so that each agent has an associated cell) which is measured by counting heads per area;
 3. Speed refers to a distance traveled from point A to point B over a given time period;
 4. Fundamental diagrams which in the project refers to a linear relationship between speed and density;
 
@@ -47,7 +47,7 @@ To evaluate the accuracy of the JPS model, the following methods for measuring p
 
 <!-- Outline the results of the research project. Aim to stick to 2-3 paragraphs. Use imagery (clearly labelled and with descriptors – see images guidance at end of template) where appropriate. -->
 
-The most interesting, and the one that raises further questions, is the application of Voronoi diagram for evaluating JPS data against GCS data. Voronoi diagram is a method to partition a 2D space into regions, or cells, in which each cell "contains all the points closer to the related particle than to others.” [@xiaoPedestrianFlowModel2016, p.568] Moreover, cells change every time an agent (here, a pedestrian) moves. As a result, each frame has, given that at least one agent moved, a differently divided 2D space. 
+The most interesting, and the one that raises further questions, is the utility of Voronoi diagram for evaluating JPS data against GCS data. Voronoi diagram is a method to partition a 2D space into regions, or cells, in which each cell "contains all the points closer to the related particle than to others.” [@xiaoPedestrianFlowModel2016, p.568] Moreover, cells change every time an agent (here, a pedestrian) moves. As a result, each frame has, given that at least one agent moved, a differently divided 2D space. 
 
 Voronoi diagrams, Steffen and Seyfried [@steffenMethodsMeasuringPedestrian2010] argue, can help to overcome some of the limitations of classical density by including, for instance, fractional counts (i.e. counting in an agent whose body (or a cell) intersects with an area of measure but is not fully within it). Hence, it is considered a more precise method [@zhangTransitionsPedestrianFundamental2011] and is used to understand pedestrian crowding at the bottlenecks [@liaoExperimentalStudyPedestrian2014] or T-junctions and straight corridors [@zhangTransitionsPedestrianFundamental2011] in the experimental settings. 
 
@@ -65,7 +65,7 @@ Potentially, Voronoi density is so much higher for GCS Zone 1 compared to Classi
 
 The exploration of different methods to evaluate simulated data against real empirical data helps to advance the understanding of pedestrian dynamics in non-experimental settings and potential pitfalls in modelling their movement there. In this specific case, exploration of various methods, with a focus on Voronoi diagram, to measure pedestrian dynamics helps to detect uncertainties, such as "edge uncertainty", that might otherwise be unnoticed and, thus, a model not calibrated to minimize them.
 
-Moreover, methods explored in this project are general, thus can be applied in other contexts, such as consumer movement in shopping. Also, code and data are open and freely [available on GitHub](https://github.com/GretaTimaite/pedestrian_simulation), including an [online documentation](https://gretatimaite.github.io/gcs_jps/) in a book format, thus allowing other researchers reproduce the results and/or adapt the code for their own projects.
+Moreover, the methods explored in this project are general, thus can be applied in other contexts, such as consumer movement in shopping. Also, code and data are open and freely [available on GitHub](https://github.com/GretaTimaite/pedestrian_simulation), including an [online documentation](https://gretatimaite.github.io/gcs_jps/) in a book format, thus allowing other researchers reproduce the results and/or adapt the code for their own projects.
 
 ## Insights
 
