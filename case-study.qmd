@@ -38,7 +38,7 @@ For more information on the environment and measure areas, please refer to the [
 To evaluate the accuracy of the JPS model, the following methods for measuring pedestrian dynamics were explored (also see Steffen and Seyfried [-@steffenMethodsMeasuringPedestrian2010]: 
 
 1. Flow which is a count of heads that pass through a line, such as doors;
-2. Density (including Voronoi diagram) which is measured by counting heads per area;
+2. Density (including Voronoi diagram, a method partitioning region, so that each agent has an associated cell) which is measured by counting heads per area;
 3. Speed refers to a distance traveled from point A to point B over a given time period;
 4. Fundamental diagrams which in the project refers to a linear relationship between speed and density;
 
