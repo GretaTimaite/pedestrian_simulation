@@ -31,14 +31,14 @@ The environment for the simulation was designed to represent the GCS. This work 
 1. Environment was divided into 4 equal polygons to better understand pedestrian movement in different regions of a train concourse;
 2. Two smaller areas (Zone 1 and Zone 2) were selected in which Zone 1 has the same density as the whole environment and Zone 2 has the highest density in the GCS;
 
-For more information on the environment and measure areas, please refer to the ["Environment" chapter](https://gretatimaite.github.io/gcs_jps/envir.html#global) in the online book developed for this project.
+For more information on the environment and measure areas, please refer to the ["Environment" chapter](https://gretatimaite.github.io/gcs_jps/envir.html) in the online book developed for this project.
 
 ### Methods
 
 To evaluate the accuracy of the JPS model, the following key methods for measuring pedestrian dynamics were explored (Steffen and Seyfried [-@steffenMethodsMeasuringPedestrian2010]: 
 
 1. Flow which is a count of heads that pass through a line, such as doors;
-2. Density (including Voronoi diagram, a method to partition space, so that each agent has an associated cell) which is measured by counting heads per area;
+2. Density, including Voronoi diagram (a method to partition space, so that each agent has an associated cell^[For more information you can see "Voronoi" chapter of this online document: https://gretatimaite.github.io/gcs_jps/voronoi.html]) which is measured by counting heads per area;
 3. Speed refers to a distance traveled from point A to point B over a given time period;
 4. Fundamental diagrams which in the project refers to a linear relationship between speed and density;
 
@@ -53,7 +53,7 @@ Voronoi diagrams, Steffen and Seyfried [@steffenMethodsMeasuringPedestrian2010] 
 
 Given fractional counting, it is not surprising that Voronoi diagrams show higher densities in all but one measured areas (see Table 1). Surprising results emerge, however, when Voronoi diagram is computed for Zone 1. Not only does the Voronoi diagram for GCS Zone 1 make the biggest difference but also the most interesting pattern emerge. In the rest of the measured areas, Voronoi density tends to drop or increase in accordance with classical density. Yet, Zone 1 in both datasets seem to follow a different pattern (see Figure 1). 
 
-![Table 1. Comparison of densities using Classical and Voronoi diagram measurement methods.](densities_quant.png)
+![Table 1. Comparison of densities using Classical and Voronoi diagram measurement methods.](densities_ratio.png)
 
 Potentially, Voronoi density is so much higher for GCS Zone 1 compared to Classical one is that it captures uncertainty of agent movement around the measured area. Active movement around Zone 1 might be influenced by the information booth and agents "window shopping" in relatively close proximity to Zone 1 but not entering it. This might have happened because GCS is not crowded enough. In the aforementioned experimental studies, in which Voronoi diagram was used, densities are higher, such as 2 or 3 individuals per squared meter. Low density, thus, might result in situations when Voronoi cells intersect with a measured area even though an agent itself might be a few meters away from, for instance, Zone 1. Arguably, this is a reason why Voronoi density for JPS Zone 1 has a "tail" -- based on the Classical density, there are no agents within Zone 1 but Voronoi cells of the (nearby) agents keep intersecting it (Voronoi diagram can be computed as long as there are two agents, thus dividing environment into two parts). This "cell intersection" might not be problematic and, indeed, happening at, for instance, bottlenecks which tend to have high density around measure area as well as within it due to the crowding. Finally, it might not be straightforward to calibrate a JPS model to reflect this "edge uncertainty", yet setting and calibrating intermediate goals for some of the agents might help to address some of this uncertainty.
 
